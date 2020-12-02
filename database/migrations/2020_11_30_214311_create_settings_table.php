@@ -17,8 +17,8 @@ class CreateSettingsTable extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->string('description')->nullable();
-            $table->enum('type', ['string', 'integer', 'bool']);
-            $table->string('value');
+            $table->enum('type', ['string', 'integer', 'bool', 'datetime']);
+            $table->string('value')->nullable();
         });
     }
 
