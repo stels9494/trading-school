@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\SettingController\SwitchGame;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Setting;
+use Carbon\Carbon;
 
 class SettingController extends Controller
 {
@@ -14,50 +17,28 @@ class SettingController extends Controller
      */
     public function index()
     {
-        //
+        return view('admin.settings.index');
     }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        
-    }
-
-
 
 
     // сохраниь набор настроек, которые пользователь может самостоятельно менять
     // запустить игру
 
-    public function startGame()
+    public function switchGame(SwitchGame $request)
     {
-        // если игра не запущена - задать начальные значения и запустить игру
-        if (!Setting::getValueByName('status'))
+        if (Setting::getValueByName('status'))
         {
-            // переводим состояние
+            Setting::setValueByName('status', false);
+            $msg = 'Игра приостановлена';
+        } else {
+            Setting::setValueByName('date_trading_start', new Carbon($request->year_start.'-'.$request->month_start));
+            Setting::setValueByName('date_trading_finish', new Carbon($request->year_finish.'-'.$request->month_finish));
+            Setting::setValueByName('month_in_minute', $request->month_in_minute);
+            Setting::setValueByName('current_date', $request->date_trading_start);
             Setting::setValueByName('status', true);
-            // задаем ремя начала торговли
-            Setting::setValueByName('current_date', Setting::getValueByName('date_trading_start'));
+            $msg = 'Игра запущена';
         }
-        return response()->json(['status' => 'ok', 'msg' => 'Игра стартовала']);
+
+        return back()->with($msg);
     }
-
-    /**
-     * приостановка игры
-     */
-    public function stopGame()
-    {
-        Setting::setValueByName('status', false);
-        return response()->json(['status' => 'ok', 'msg' => 'Игра остановлена']);
-    }
-
-
-
-
 }

@@ -15,26 +15,24 @@ class Setting extends Model
      * 
      * @return mixed
      */
-    public function getValueAttribute()
+    public function getValueAttribute($value)
     {
-    	$value = null;
-
     	switch ($this->type)
     	{
     		case 'bool':
-    			$value = ($this->value == '1');
+    			$value = ($value == '1');
     			break;
 
     		case 'integer':
-    			$value = (int) $this->value;
+    			$value = (int) $value;
     			break;
 
     		case 'string':
-    			$value = $this->value;
+    			$value = $value;
     			break;
 
     		case 'datetime':
-    			$value = new Carbon($this->value);
+    			$value = new Carbon($value);
     			break;
     	}
 
