@@ -30,7 +30,7 @@ class SettingsTableSeeder extends Seeder
         		'type' => 'bool',
         		'value' => false,
         	],[
-        		'name' => 'month_in_minut',
+        		'name' => 'month_in_minute',
         		'description' => 'сколько минут длится месяц',
         		'type' => 'integer',
         		'value' => 2,

@@ -33,3 +33,4 @@ Route::resource('/admin/stocks', 'Admin\StockController', ['as' => 'admin']);
 Route::get('/admin/settings', 'Admin\SettingController@index')->name('admin.settings.index');
 Route::post('/switch-game', 'Admin\SettingController@switchGame')->name('switch-game');
 Route::get('/admin', 'Admin\MainController@index')->name('admin.index');
+Route::post('/admin/commands/{command}/clear-histories', 'Admin\CommandController@clearHistories')->name('admin.commands.clear-histories');

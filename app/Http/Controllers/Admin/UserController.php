@@ -39,7 +39,7 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Command $command)
+    public function store(Store $request, Command $command)
     {
         $user = User::create([
             'login' => $request->login,
@@ -50,7 +50,7 @@ class UserController extends Controller
             'command_id' => $command->id,
         ])->assignRole('member');
 
-        return redirect()->route('admin.users.edit', [$command, $user])->with('success', 'Пользователь создан');
+        return redirect()->route('admin.commands.show', $command)->with('success', 'Пользователь создан');
     }
 
     /**
@@ -72,7 +72,7 @@ class UserController extends Controller
      */
     public function edit(Command $command, User $user)
     {
-        return view('admin.users.show', ['data' => compact('command', 'user')]);
+        return view('admin.users.edit', ['data' => compact('command', 'user')]);
     }
 
     /**
@@ -106,11 +106,12 @@ class UserController extends Controller
      */
     public function destroy(Command $command, User $user)
     {
-        $user->delete();
-        return redirect()->route('admin.users.index', $command);
+        if (!$user->hasRole('admin'))
+            $user->delete();
+        return redirect()->route('admin.commands.show', $command)->with('success', 'Пользователь удален');
     }
 
-    public function setCommander(Request $request, Command $command, User $user): JsonResponse
+    public function setCommander(Request $request, Command $command, User $user)
     {
         $user->commander = $request->commander;
         return response()->json([

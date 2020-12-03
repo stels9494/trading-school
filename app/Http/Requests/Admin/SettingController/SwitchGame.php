@@ -33,7 +33,7 @@ class SwitchGame extends FormRequest
             'month_finish' => 'required|integer|between:1,12',
             'year_start' => 'required|integer|between:1900,3000',
             'year_finish' => 'required|integer|between:1900,3000|gte:year_start',
-            'month_in_minut' => 'required|integer|min:1',
+            'month_in_minute' => 'required|integer|min:1',
         ];
     }
 }

@@ -24,7 +24,7 @@ class Update extends FormRequest
     public function rules()
     {
         return [
-            'login' => 'required|string|unique:users,login',
+            'login' => 'required|string|unique:users,login,'.$this->user->id,
             'firstname' => 'nullable|string|max:255',
             'lastname' => 'nullable|string|max:255',
             'patronymic' => 'nullable|string|max:255',

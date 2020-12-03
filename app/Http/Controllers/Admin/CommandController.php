@@ -45,7 +45,7 @@ class CommandController extends Controller
         ]);
 
         return redirect()
-            ->route('admin.commands.edit', ['data' => compact('command')])
+            ->route('admin.commands.index')
             ->with('success', 'Команда создана');
 
     }
@@ -98,6 +98,12 @@ class CommandController extends Controller
     public function destroy(Command $command)
     {
         $command->delete();
-        return route('admin.commands.index')->with('success', 'Команда удалена');
+        return redirect()->route('admin.commands.index')->with('success', 'Команда удалена');
+    }
+
+    public function clearHistories(Request $request, Command $command)
+    {
+        $command->tradingHistories()->delete();
+        return redirect()->route('admin.commands.show', $command)->with('success', 'История очищена');
     }
 }

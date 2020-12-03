@@ -10,6 +10,10 @@ class CommandStock extends Model
     protected $table = 'command_stock';
     protected $guarded = [];
 
+    protected $dates = [
+        'time_by_exchange',
+    ];
+
     /********** RELATIONHIPS START ********************/
 
     	/**
@@ -29,4 +33,19 @@ class CommandStock extends Model
     	}
 
     /********** RELATIONHIPS FINISH ********************/
+
+    /**
+     * Действие
+     * 
+     * @return string
+     */
+    public function getActionAttribute()
+    {
+        if ($this->count < 0)
+        {
+            return 'SELL';
+        } else {
+            return 'BUY';
+        }
+    }
 }

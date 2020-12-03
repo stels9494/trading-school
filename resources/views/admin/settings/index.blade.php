@@ -10,6 +10,14 @@
 	<form action="{{ route('switch-game') }}" method="post">
 		@csrf
 		<div class="container">
+
+			<div class="row my-4">
+				<div class="col-12">
+					<span class="h3">Настройки</span>
+				</div>
+			</div>
+
+
 			<div class="row">
 				<label class="col-12">Дата начала торгов</label>
 				<div class="input-group mb-3 col-5">
@@ -89,7 +97,7 @@
 
 			<div class="row mb-3">
 				<div class="col-2">
-					<input class="form-control" type="number" min="1" max="30" step="1" value="2" name="month_in_minut" {{ $status ? 'disabled' : '' }}>
+					<input class="form-control" type="number" min="1" max="30" step="1" value="{{ old('month_in_minute') ?? \App\Models\Setting::getValueByName('month_in_minute') }}" name="month_in_minute" {{ $status ? 'disabled' : '' }}>
 				</div>
 				<div class="col-3">
 					<span>Минут за месяц</span>

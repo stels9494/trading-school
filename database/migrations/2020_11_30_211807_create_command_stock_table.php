@@ -19,6 +19,7 @@ class CreateCommandStockTable extends Migration
             $table->unsignedBigInteger('stock_id');
             $table->float('price')->comment('по какой цене');
             $table->integer('count')->comment('кол-во акций. если < 0 - была продажа, если > 0 - была покупка');
+            $table->timestamp('time_by_exchange');
             $table->timestamps();
 
             $table->foreign('command_id')->references('id')->on('commands')->onDelete('cascade')->onDelete('cascade');
