@@ -45,11 +45,15 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    protected $appends = [
+        'fio'
+    ];
+
     /********** RELATIONSHIPS START ********************/
 
         /**
          * Команда, в которой находится пользователь
-         * 
+         *
          */
         public function command()
         {
@@ -73,9 +77,14 @@ class User extends Authenticatable
         return ;
     }
 
+    public function getFioAttribute()
+    {
+        return $this->lastname.' '.$this->firstname.' '.$this->patronymic;
+    }
+
     /**
      * Имеет ли пользователь роль командира
-     * 
+     *
      * @return true если командир в указанной команде
      */
     public function getCommanderAttribute(): bool

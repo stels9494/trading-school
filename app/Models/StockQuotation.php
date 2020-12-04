@@ -7,15 +7,18 @@ use Illuminate\Database\Eloquent\Builder;
 
 class StockQuotation extends Model
 {
+    public $timestamps = false;
     protected $guarded = [];
+
+    protected $dates = [
+        'datetime'
+    ];
 
     /********** RELATIONSHIPS START ********************/
 
-        public $timestamps = false;
-
     	/**
     	 * Акция, которой принадлежит котировка
-    	 * 
+    	 *
     	 */
     	public function stocks()
     	{

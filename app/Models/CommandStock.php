@@ -14,6 +14,11 @@ class CommandStock extends Model
         'time_by_exchange',
     ];
 
+    protected $appends = [
+        'action',
+        'time'
+    ];
+
     /********** RELATIONHIPS START ********************/
 
     	/**
@@ -34,9 +39,14 @@ class CommandStock extends Model
 
     /********** RELATIONHIPS FINISH ********************/
 
+    public function getTimeAttribute()
+    {
+        return $this->time_by_exchange->format('d.m.Y H:m');
+    }
+
     /**
      * Действие
-     * 
+     *
      * @return string
      */
     public function getActionAttribute()

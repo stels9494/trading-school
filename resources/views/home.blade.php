@@ -1,23 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Dashboard') }}</div>
+<div id="app">
+    <game-screen
+        :stocks="{{ \App\Models\Stock::where('on_the_exchange', true)->get() }}"
+        :user="{{ auth()->user() }}"
+        :command="{{ auth()->user()->command }}"
+    >
 
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    {{ __('You are logged in!') }}
-                </div>
-            </div>
-        </div>
-    </div>
+    </game-screen>
 </div>
 @endsection
