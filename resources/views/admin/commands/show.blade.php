@@ -61,7 +61,8 @@
 				<div class="col-6">
 					<label>&nbsp;</label>
 					<div>
-					    <button type="submit" class="btn btn-success">Сохранить</button>						
+					    <button type="submit" class="btn btn-success"><i class="fa fa-save"></i>  Сохранить</button>
+					    <a href="{{ route('admin.commands.index') }}" class="btn btn-secondary"><i class="fa fa-arrow-left"></i> Назад</a>						
 					</div>
 				</div>
 			</div>

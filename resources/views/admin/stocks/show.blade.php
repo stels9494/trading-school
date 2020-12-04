@@ -17,7 +17,7 @@
 @section('content')
 
 	
-	<form class="d-none" action="{{ route('admin.stocks.import-quotations', $data['stock']) }}" method="post" enctype="multipart/form-data">
+	<form class="d-none" action="{{ route('admin.stocks.import-quotations-for-stock', $data['stock']) }}" method="post" enctype="multipart/form-data">
 		@csrf
 		<input id="file_quotations" type="file" name="file_quotations">
 	</form>
@@ -51,8 +51,9 @@
 				<div class="col-6">
 					<label>&nbsp;</label>
 					<div>
-					    <button type="submit" class="btn btn-success">Сохранить</button>
-					    <button class="btn btn-secondary import" type="button" onclick=""><i class="fa fa-upload"></i></button>
+					    <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Сохранить</button>
+					    <button class="btn btn-secondary import" type="button" onclick=""><i class="fa fa-upload"></i> Импорт</button>
+					    <a href="{{ route('admin.stocks.index') }}" class="btn btn-secondary"><i class="fa fa-arrow-left"></i> Назад</a>
 					</div>
 				</div>
 			</div>

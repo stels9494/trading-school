@@ -91,6 +91,60 @@ class Stock extends Model
 		return $result;
 	}
 
+	public function importQuotationsForStock(UploadedFile $file): bool
+	{
+		$startYearIndexSymbol = 'A';
+		$startYearIndexNumber = 3;
+		$stepYearIndex = 13;
+
+		$startStockIndexSymbol = 'B';
+		$stoclIndexNumber = 2;
+
+
+
+		$result = false;
+
+		DB::beginTransaction();
+		if ($file->isValid())
+		{
+			$reader = new Xlsx();
+			$reader->setReadDataOnly(true);
+			$spreadsheet = $reader->load($file->path());
+
+
+			$i = $startStockIndexSymbol;
+			// for ($i = $startStockIndexSymbol; $stockName = $spreadsheet->getActiveSheet()->getCell($i.$stoclIndexNumber)->getValue(); $i++)
+			// {
+				$this->quotations()->delete();
+				// $stock = Stock::create([
+				// 	'name' => $stockName,
+				// ]);
+				for ($j = $startYearIndexNumber; $year = $spreadsheet->getActiveSheet()->getCell($startYearIndexSymbol.$j)->getValue() ; $j += $stepYearIndex)
+				{
+					dump($year);
+					for ($p = $j + 1; $price = $spreadsheet->getActiveSheet()->getCell($i.$p)->getValue(); $p++)
+					{
+						$month = $spreadsheet->getActiveSheet()->getCell($startYearIndexSymbol.$p)->getValue();
+						$this->quotations()->create([
+							'price' => $price,
+							'datetime' => new Carbon($year.'-'.$month),
+						]);
+					}
+
+				}
+			// }
+
+			$result = true;
+		}
+
+		if ($result)
+			DB::commit();
+		else
+			DB::rollback();
+
+		return $result;
+	}
+
 	/**
 	 * Есть ли котировки для акции
 	 * 

@@ -25,7 +25,6 @@ class Update extends FormRequest
     {
         return [
             'name' => 'required|string|min:1|max:255',
-            'on_the_exchange' => 'required|boolean',
         ];
     }
 }

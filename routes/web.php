@@ -36,3 +36,4 @@ Route::get('/admin', 'Admin\MainController@index')->name('admin.index');
 Route::post('/admin/commands/{command}/clear-histories', 'Admin\CommandController@clearHistories')->name('admin.commands.clear-histories');
 Route::post('/admin/stocks/{stock}/set-exchange', 'Admin\StockController@setExchange')->name('admin.stocks.set-exchange');
 Route::post('/admin/stocks/import-quotations', 'Admin\StockController@importQuotations')->name('admin.stocks.import-quotations');
+Route::post('/admin/stocks/{stock}/import-quotations-for-stock', 'Admin\StockController@importQuotationsForStock')->name('admin.stocks.import-quotations-for-stock');

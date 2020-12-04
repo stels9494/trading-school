@@ -78,10 +78,12 @@ class StockController extends Controller
      */
     public function update(Update $request, Stock $stock)
     {
-        $stock = Stock::create([
+        $stock->update([
             'name' => $request->name,
             'on_the_exchange' => $request->on_the_exchange ?? false,
         ]);
+
+        return redirect()->route('admin.stocks.show', $stock)->with('success', 'Данные акции обновлены');
     }
 
     /**
@@ -121,4 +123,17 @@ class StockController extends Controller
             return redirect()->route('admin.stocks.index')->with('error', 'Во время импорта произошла ошибка');
         }
     }
+
+    public function importQuotationsForStock(Request $request, Stock $stock)
+    {
+        $result = $stock->importQuotationsForStock($request->file_quotations);
+
+        if ($result)
+        {
+            return redirect()->route('admin.stocks.show', $stock)->with('success', 'Котировки импортированы');
+        } else {
+            return redirect()->route('admin.stocks.show', $stock)->with('error', 'Во время импорта произошла ошибка');
+        }
+    }
+
 }
