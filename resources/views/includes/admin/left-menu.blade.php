@@ -5,7 +5,7 @@
       <span class="sr-only">Toggle Menu</span>
     </button>
   </div>
-  <h1><a href="index.html" class="logo">{{ env('APP_NAME') }}</a></h1>
+  <h1><a href="{{ route('admin.index') }}" class="logo">{{ env('APP_NAME') }}</a></h1>
   <ul class="list-unstyled components mb-5">
     <li class="{{ request()->segment(2) == '' ? 'active' : '' }}">
       <a href="{{ route('admin.index') }}"><span class="fa fa-home mr-3"></span> Общее</a>
@@ -18,6 +18,15 @@
     </li>
     <li class="{{ request()->segment(2) == 'settings' ? 'active' : '' }}">
       <a href="{{ route('admin.settings.index') }}"><span class="fa fa-cog mr-3"></span> Настройки</a>
+    </li>
+    <li>
+        <a href="/">
+          <form action="{{ route('logout') }}" method="post" onclick="$(this).submit();">
+            @csrf
+            <span class="fa fa-sign-out  mr-3">
+            </span> Выход
+          </form>
+        </a>
     </li>
   </ul>
 </nav>

@@ -16,7 +16,7 @@ class CreateStocksTable extends Migration
         Schema::create('stocks', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
-            $table->boolean('on_the_exchange')->default(true);
+            $table->boolean('on_the_exchange')->default(false);
             $table->timestamps();
         });
     }

@@ -37,8 +37,8 @@
 					<thead>
 						<tr>
 							<th scope="col">Название</th>
-							<th scope="col">Баланс</th>
-							<th scope="col">Игроков</th>
+							<th class="text-center" scope="col">Баланс</th>
+							<th class="text-center" scope="col">Игроков</th>
 							<th scope="col">&nbsp;</th>
 						</tr>
 					</thead>
@@ -46,8 +46,8 @@
 						@foreach ($data['commands'] as $command)
 							<tr>
 								<td>{{ $command->name }}</td>
-								<td>{{ $command->balance }}</td>
-								<td>{{ $command->users()->count() }}</td>
+								<td class="text-center">{{ $command->balance }}</td>
+								<td class="text-center">{{ $command->users()->count() }}</td>
 								<td class="text-right">
 									<a href="{{ route('admin.commands.show', $command) }}" class="btn btn-sm btn-secondary"><i class="fa fa-eye"></i></a>
 									<form style="display: inline-block;" action="{{ route('admin.commands.destroy', $command) }}" method="post" onsubmit="return confirm('Удалить команду со всей историей торговли и участниками?')">

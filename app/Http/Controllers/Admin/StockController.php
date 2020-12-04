@@ -40,11 +40,11 @@ class StockController extends Controller
     public function store(Store $request)
     {
         $stock = Stock::create([
-            'name' => $request->string,
+            'name' => $request->name,
             'on_the_exchange' => $request->on_the_exchange ?? false,
         ]);
 
-        return redirect()->route('admin.stocks.edit', $stock)->with('success', 'Акция была создана');
+        return redirect()->route('admin.stocks.index', $stock)->with('success', 'Акция была создана');
     }
 
     /**
@@ -94,5 +94,31 @@ class StockController extends Controller
     {
         $stock->delete();
         return redirect()->route('admin.stocks.index')->with('success', 'Акция удалена');
+    }
+
+    /**
+     * 
+     */
+    public function setExchange(Request $request, Stock $stock)
+    {
+        $stock->update(['on_the_exchange' => $request->on_the_exchange]);
+        return response()->json([
+            'status' => 'ok',
+        ]);
+    }
+
+    /**
+     * 
+     */
+    public function importQuotations(Request $request)
+    {
+        $result = Stock::importQuotations($request->file_quotations);
+
+        if ($result)
+        {
+            return redirect()->route('admin.stocks.index')->with('success', 'Котировки импортированы');
+        } else {
+            return redirect()->route('admin.stocks.index')->with('error', 'Во время импорта произошла ошибка');
+        }
     }
 }

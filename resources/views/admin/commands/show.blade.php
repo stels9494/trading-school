@@ -91,10 +91,10 @@
 								<td class="text-center">{{ $user->patronymic }}</td>
 								<td class="text-center">
 									
-								<div class="custom-control custom-checkbox">
-									<input type="checkbox" class="custom-control-input commander-switch" id="commander{{ $user->id }}" data-user-id="{{ $user->id }}" data-switch-url="{{ route('admin.users.set-commander', [$data['command'], $user]) }}" {{ $user->commander ? 'checked' : '' }}>
-									<label class="custom-control-label" for="commander{{ $user->id }}"></label>
-								</div>
+									<div class="custom-control custom-checkbox">
+										<input type="checkbox" class="custom-control-input commander-switch" id="commander{{ $user->id }}" data-user-id="{{ $user->id }}" data-switch-url="{{ route('admin.users.set-commander', [$data['command'], $user]) }}" {{ $user->commander ? 'checked' : '' }}>
+										<label class="custom-control-label" for="commander{{ $user->id }}"></label>
+									</div>
 
 								</td>
 								<td class="text-right">

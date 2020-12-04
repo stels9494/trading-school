@@ -34,3 +34,5 @@ Route::get('/admin/settings', 'Admin\SettingController@index')->name('admin.sett
 Route::post('/switch-game', 'Admin\SettingController@switchGame')->name('switch-game');
 Route::get('/admin', 'Admin\MainController@index')->name('admin.index');
 Route::post('/admin/commands/{command}/clear-histories', 'Admin\CommandController@clearHistories')->name('admin.commands.clear-histories');
+Route::post('/admin/stocks/{stock}/set-exchange', 'Admin\StockController@setExchange')->name('admin.stocks.set-exchange');
+Route::post('/admin/stocks/import-quotations', 'Admin\StockController@importQuotations')->name('admin.stocks.import-quotations');

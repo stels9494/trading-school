@@ -4,7 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminat\Http\UploadedFile;
+use Illuminate\Http\UploadedFile;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class Stock extends Model
 {
@@ -21,6 +24,14 @@ class Stock extends Model
 			return $this->belongsToMany(Command::class);
 		}
 
+		/**
+		 * Котировки акции
+		 */
+		public function quotations()
+		{
+			return $this->hasMany(StockQuotation::class);
+		}
+
 	/********** RELATIONSHIPS FINISH ********************/
 
 	/**
@@ -28,13 +39,65 @@ class Stock extends Model
 	 * 
 	 * @return true если котировки импортировались
 	 */
-	public function importQuotations(UploadedFile $file): bool
+	public static function importQuotations(UploadedFile $file): bool
 	{
+		$startYearIndexSymbol = 'A';
+		$startYearIndexNumber = 3;
+		$stepYearIndex = 13;
+
+		$startStockIndexSymbol = 'B';
+		$stoclIndexNumber = 2;
+
+
+
 		$result = false;
+
+		DB::beginTransaction();
 		if ($file->isValid())
 		{
+			$reader = new Xlsx();
+			$reader->setReadDataOnly(true);
+			$spreadsheet = $reader->load($file->path());
 
+
+			for ($i = $startStockIndexSymbol; $stockName = $spreadsheet->getActiveSheet()->getCell($i.$stoclIndexNumber)->getValue(); $i++)
+			{
+				$stock = Stock::create([
+					'name' => $stockName,
+				]);
+				for ($j = $startYearIndexNumber; $year = $spreadsheet->getActiveSheet()->getCell($startYearIndexSymbol.$j)->getValue() ; $j += $stepYearIndex)
+				{
+
+					for ($p = $j + 1; $price = $spreadsheet->getActiveSheet()->getCell($i.$p)->getValue(); $p++)
+					{
+						$month = $spreadsheet->getActiveSheet()->getCell($startYearIndexSymbol.$p)->getValue();
+						$stock->quotations()->create([
+							'price' => $price,
+							'datetime' => new Carbon($year.'-'.$month),
+						]);
+					}
+
+				}
+			}
+
+			$result = true;
 		}
+
+		if ($result)
+			DB::commit();
+		else
+			DB::rollback();
+
 		return $result;
+	}
+
+	/**
+	 * Есть ли котировки для акции
+	 * 
+	 * @return bool
+	 */
+	public function getIsQuotationsAttribute(): bool
+	{
+		return (bool) $this->quotations()->count();
 	}
 }
