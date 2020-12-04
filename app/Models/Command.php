@@ -68,4 +68,78 @@ class Command extends Model
             ->with('stock')
             ->get();
     }
+
+    /**
+     * Купить указанное кол-во акций
+     * 
+     * @return true если достаточно средств
+     */
+    public function buy(Stock $stock, int $count): bool
+    {
+        // получить средства команды
+        // получить стоимость акции
+        // проверить возможность покупки такого кол-ва
+        $result = false;
+        DB::beginTransaction();
+        // акция торгуется и у команды достаточный баланс для покупки
+        $currentDate = Setting::getValueByName('current_date');
+        if ($stock->on_the_exchange && $stock->isQuotationByDay($currentDate) && $this->balance >= $stock->current_price * $count && Setting::getValueByName('status'))
+        {
+            $this->update([
+                'balance' => $this->balance - $stock->current_price * $count,
+            ]);
+            $this->tradingHistories()->create([
+                'stock_id' => $stock->id,
+                'price' => $stock->current_price,
+                'count' => $count,
+                'time_by_exchange' => $currentDate,
+            ]);
+            $result = true;
+        }
+
+        if ($result)
+            DB::commit();
+        else
+            DB::rollback();
+
+        return $result;
+    }
+
+    /**
+     * Продать указанное кол-во акций
+     * 
+     * @return true если достаточно средств
+     */
+    public function sell(Stock $stock, int $count): bool
+    {
+        $result = false;
+        DB::beginTransaction();
+
+        // получить кол-во таких акций у команды
+        $commandHasCount = $this->tradingHistories()->where('stock_id', $stock->id)->sum('count');
+        $currentDate = Setting::getValueByName('current_date');
+
+        // акция торгуется и у команды имеется достаточное кол-во для продажи
+        // пользователь должен быть командиром в этой команде
+        if ($stock->on_the_exchange && $stock->isQuotationByDay($currentDate) && $commandHasCount >= $count && Setting::getValueByName('status'))
+        {
+            $this->update([
+                'balance' => $this->balance + $stock->current_price * $count,
+            ]);
+            $this->tradingHistories()->create([
+                'stock_id' => $stock->id,
+                'price' => $stock->current_price,
+                'count' => $count * -1,
+                'time_by_exchange' => $currentDate,
+            ]);
+            $result = true;
+        }
+
+        if ($result)
+            DB::commit();
+        else
+            DB::rollback();
+
+        return $result;
+    }
 }

@@ -49,6 +49,9 @@ class Setting extends Model
     	switch ($this->type)
     	{
     		case 'bool':
+                $this->attributes['value'] = (bool) $value;
+                break;
+                
             case 'integer':
             case 'string':
             case 'datetime':

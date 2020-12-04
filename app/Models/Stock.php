@@ -34,6 +34,29 @@ class Stock extends Model
 
 	/********** RELATIONSHIPS FINISH ********************/
 
+
+
+	/**
+	 * Есть ли котировки для акции
+	 * 
+	 * @return bool
+	 */
+	public function getIsQuotationsAttribute(): bool
+	{
+		return (bool) $this->quotations()->count();
+	}
+
+	/**
+	 * текущая стоимость акции
+	 * 
+	 * @return float
+	 */
+	public function getCurrentPriceAttribute(): float
+	{
+		$quotation = $this->quotations()->where('datetime', Setting::getValueByName('current_date'))->first();
+		return $quotation ? $quotation->price : 0;
+	}
+
 	/**
 	 * 
 	 * 
@@ -111,28 +134,19 @@ class Stock extends Model
 			$reader->setReadDataOnly(true);
 			$spreadsheet = $reader->load($file->path());
 
-
-			$i = $startStockIndexSymbol;
-			// for ($i = $startStockIndexSymbol; $stockName = $spreadsheet->getActiveSheet()->getCell($i.$stoclIndexNumber)->getValue(); $i++)
-			// {
-				$this->quotations()->delete();
-				// $stock = Stock::create([
-				// 	'name' => $stockName,
-				// ]);
-				for ($j = $startYearIndexNumber; $year = $spreadsheet->getActiveSheet()->getCell($startYearIndexSymbol.$j)->getValue() ; $j += $stepYearIndex)
+			$this->quotations()->delete();
+			for ($j = $startYearIndexNumber; $year = $spreadsheet->getActiveSheet()->getCell($startYearIndexSymbol.$j)->getValue() ; $j += $stepYearIndex)
+			{
+				for ($p = $j + 1; $price = $spreadsheet->getActiveSheet()->getCell($startStockIndexSymbol.$p)->getValue(); $p++)
 				{
-					dump($year);
-					for ($p = $j + 1; $price = $spreadsheet->getActiveSheet()->getCell($i.$p)->getValue(); $p++)
-					{
-						$month = $spreadsheet->getActiveSheet()->getCell($startYearIndexSymbol.$p)->getValue();
-						$this->quotations()->create([
-							'price' => $price,
-							'datetime' => new Carbon($year.'-'.$month),
-						]);
-					}
-
+					$month = $spreadsheet->getActiveSheet()->getCell($startYearIndexSymbol.$p)->getValue();
+					$this->quotations()->create([
+						'price' => $price,
+						'datetime' => new Carbon($year.'-'.$month),
+					]);
 				}
-			// }
+
+			}
 
 			$result = true;
 		}
@@ -146,12 +160,12 @@ class Stock extends Model
 	}
 
 	/**
-	 * Есть ли котировки для акции
+	 * Есть ли котировка за указанную дату
 	 * 
-	 * @return bool
+	 * @return true если котировка на этот день имеется
 	 */
-	public function getIsQuotationsAttribute(): bool
+	public function isQuotationByDay(Carbon $datetime)
 	{
-		return (bool) $this->quotations()->count();
+		return $this->quotations()->where('datetime', $datetime)->exists();
 	}
 }

@@ -34,7 +34,7 @@ class SettingController extends Controller
             Setting::setValueByName('date_trading_start', new Carbon($request->year_start.'-'.$request->month_start));
             Setting::setValueByName('date_trading_finish', new Carbon($request->year_finish.'-'.$request->month_finish));
             Setting::setValueByName('month_in_minute', $request->month_in_minute);
-            Setting::setValueByName('current_date', $request->date_trading_start);
+            Setting::setValueByName('current_date', new Carbon($request->year_start.'-'.$request->month_start));
             Setting::setValueByName('status', true);
             $msg = 'Игра запущена';
         }

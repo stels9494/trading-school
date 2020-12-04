@@ -121,6 +121,42 @@
 			</div>
 		</div>
 
+		{{-- портфель команды --}}
+		<div class="row mt-4">
+			<div class="col-12">
+				<h5 class="my-3">
+					Портфель команды
+				</h5>
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th scope="col">Название акции</th>
+							<th class="text-center" scope="col">Кол-во</th>
+						</tr>
+					</thead>
+					<tbody>
+
+						@foreach ($data['command']->stocks as $stock)
+							<tr>
+								<td>{{ $stock->stock->name }}</td>
+								<td class="text-center">{{ $stock->count }}</td>
+							</tr>
+						@endforeach
+
+						@if (!$data['command']->stocks->count())
+							<tr>
+								<td colspan="5" class="text-center">
+									<span class="h6 ">Портфель пустой</span>
+								</td>
+							</tr>
+						@endif
+
+					</tbody>
+				</table>
+			</div>
+
+		</div>
+
 		{{-- история торгов команды --}}
 		<div class="row my-4">
 			<div class="col-12">
@@ -143,7 +179,7 @@
 					</thead>
 					<tbody>
 
-						@foreach ($data['command']->tradingHistories as $history)
+						@foreach ($data['command']->tradingHistories()->orderBy('id', 'desc')->get() as $history)
 							<tr>
 								<td>{{ $history->time_by_exchange->format('m.Y') }}</td>
 								<td class="text-center">{{ $history->stock->name }}</td>

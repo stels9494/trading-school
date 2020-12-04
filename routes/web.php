@@ -38,6 +38,8 @@ Route::post('/admin/stocks/{stock}/set-exchange', 'Admin\StockController@setExch
 Route::post('/admin/stocks/import-quotations', 'Admin\StockController@importQuotations')->name('admin.stocks.import-quotations');
 Route::post('/admin/stocks/{stock}/import-quotations-for-stock', 'Admin\StockController@importQuotationsForStock')->name('admin.stocks.import-quotations-for-stock');
 
-Route::resource('/stocks', 'StockController');
 
+Route::resource('/stocks', 'StockController');
 Route::get('/test', 'HomeController@test');
+Route::post('/commands/{command}/stocks/{stock}/buy', 'StockController@buy')->name('stocks.buy');
+Route::post('/commands/{command}/stocks/{stock}/sell', 'StockController@sell')->name('stocks.sell');
