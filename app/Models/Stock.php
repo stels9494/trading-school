@@ -34,6 +34,29 @@ class Stock extends Model
 
 	/********** RELATIONSHIPS FINISH ********************/
 
+
+
+	/**
+	 * Есть ли котировки для акции
+	 * 
+	 * @return bool
+	 */
+	public function getIsQuotationsAttribute(): bool
+	{
+		return (bool) $this->quotations()->count();
+	}
+
+	/**
+	 * текущая стоимость акции
+	 * 
+	 * @return float
+	 */
+	public function getCurrentPriceAttribute(): float
+	{
+		$quotation = $this->quotations()->where('datetime', Setting::getValueByName('current_date'))->first();
+		return $quotation ? 0 : $quotation->price;
+	}
+
 	/**
 	 * 
 	 * 
@@ -111,28 +134,19 @@ class Stock extends Model
 			$reader->setReadDataOnly(true);
 			$spreadsheet = $reader->load($file->path());
 
-
-			$i = $startStockIndexSymbol;
-			// for ($i = $startStockIndexSymbol; $stockName = $spreadsheet->getActiveSheet()->getCell($i.$stoclIndexNumber)->getValue(); $i++)
-			// {
-				$this->quotations()->delete();
-				// $stock = Stock::create([
-				// 	'name' => $stockName,
-				// ]);
-				for ($j = $startYearIndexNumber; $year = $spreadsheet->getActiveSheet()->getCell($startYearIndexSymbol.$j)->getValue() ; $j += $stepYearIndex)
+			$this->quotations()->delete();
+			for ($j = $startYearIndexNumber; $year = $spreadsheet->getActiveSheet()->getCell($startYearIndexSymbol.$j)->getValue() ; $j += $stepYearIndex)
+			{
+				for ($p = $j + 1; $price = $spreadsheet->getActiveSheet()->getCell($startStockIndexSymbol.$p)->getValue(); $p++)
 				{
-					dump($year);
-					for ($p = $j + 1; $price = $spreadsheet->getActiveSheet()->getCell($i.$p)->getValue(); $p++)
-					{
-						$month = $spreadsheet->getActiveSheet()->getCell($startYearIndexSymbol.$p)->getValue();
-						$this->quotations()->create([
-							'price' => $price,
-							'datetime' => new Carbon($year.'-'.$month),
-						]);
-					}
-
+					$month = $spreadsheet->getActiveSheet()->getCell($startYearIndexSymbol.$p)->getValue();
+					$this->quotations()->create([
+						'price' => $price,
+						'datetime' => new Carbon($year.'-'.$month),
+					]);
 				}
-			// }
+
+			}
 
 			$result = true;
 		}
@@ -143,15 +157,5 @@ class Stock extends Model
 			DB::rollback();
 
 		return $result;
-	}
-
-	/**
-	 * Есть ли котировки для акции
-	 * 
-	 * @return bool
-	 */
-	public function getIsQuotationsAttribute(): bool
-	{
-		return (bool) $this->quotations()->count();
 	}
 }
