@@ -54,7 +54,7 @@ class Stock extends Model
 	public function getCurrentPriceAttribute(): float
 	{
 		$quotation = $this->quotations()->where('datetime', Setting::getValueByName('current_date'))->first();
-		return $quotation ? 0 : $quotation->price;
+		return $quotation ? $quotation->price : 0;
 	}
 
 	/**
@@ -157,5 +157,15 @@ class Stock extends Model
 			DB::rollback();
 
 		return $result;
+	}
+
+	/**
+	 * Есть ли котировка за указанную дату
+	 * 
+	 * @return true если котировка на этот день имеется
+	 */
+	public function isQuotationByDay(Carbon $datetime)
+	{
+		return $this->quotations()->where('datetime', $datetime)->exists();
 	}
 }

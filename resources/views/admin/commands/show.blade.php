@@ -143,7 +143,7 @@
 					</thead>
 					<tbody>
 
-						@foreach ($data['command']->tradingHistories as $history)
+						@foreach ($data['command']->tradingHistories()->orderBy('id', 'desc')->get() as $history)
 							<tr>
 								<td>{{ $history->time_by_exchange->format('m.Y') }}</td>
 								<td class="text-center">{{ $history->stock->name }}</td>

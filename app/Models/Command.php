@@ -82,7 +82,8 @@ class Command extends Model
         $result = false;
         DB::beginTransaction();
         // акция торгуется и у команды достаточный баланс для покупки
-        if ($stock->on_the_exchange && $this->balance >= $stock->current_price * $count && Setting::getValueByName('status'))
+        $currentDate = Setting::getValueByName('current_date');
+        if ($stock->on_the_exchange && $stock->isQuotationByDay($currentDate) && $this->balance >= $stock->current_price * $count && Setting::getValueByName('status'))
         {
             $this->update([
                 'balance' => $this->balance - $stock->current_price * $count,
@@ -91,7 +92,7 @@ class Command extends Model
                 'stock_id' => $stock->id,
                 'price' => $stock->current_price,
                 'count' => $count,
-                'time_by_exchange' => Setting::getValueByName('current_date'),
+                'time_by_exchange' => $currentDate,
             ]);
             $result = true;
         }
@@ -116,10 +117,11 @@ class Command extends Model
 
         // получить кол-во таких акций у команды
         $commandHasCount = $this->tradingHistories()->where('stock_id', $stock->id)->sum('count');
+        $currentDate = Setting::getValueByName('current_date');
 
         // акция торгуется и у команды имеется достаточное кол-во для продажи
         // пользователь должен быть командиром в этой команде
-        if ($stock->on_the_exchange && $commandHasCount >= $count && Setting::getValueByName('status'))
+        if ($stock->on_the_exchange && $stock->isQuotationByDay($currentDate) && $commandHasCount >= $count && Setting::getValueByName('status'))
         {
             $this->update([
                 'balance' => $this->balance + $stock->current_price * $count,
@@ -128,7 +130,7 @@ class Command extends Model
                 'stock_id' => $stock->id,
                 'price' => $stock->current_price,
                 'count' => $count * -1,
-                'time_by_exchange' => Setting::getValueByName('current_date'),
+                'time_by_exchange' => $currentDate,
             ]);
             $result = true;
         }
