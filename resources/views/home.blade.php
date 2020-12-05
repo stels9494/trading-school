@@ -6,7 +6,7 @@
         :stocks="{{ \App\Models\Stock::where('on_the_exchange', true)->get() }}"
         :user="{{ auth()->user() }}"
         :command="{{ auth()->user()->command }}"
-        :status="{{ \App\Models\Setting::getValueByName('status') ? 1 : 0 }}"
+        :status_prop="{{ \App\Models\Setting::getValueByName('status') ? 1 : 0 }}"
     >
 
     </game-screen>

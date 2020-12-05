@@ -5,6 +5,14 @@
                 <div class="mr-2">
                     <b>{{ command.name }}</b>
                 </div>
+
+                <div
+                    class="mr-2"
+                    :class="status ? 'text-success' : 'text-danger'"
+                >
+                    <b>{{ status ? 'Игра запущена' : 'Игра не запущена' }}</b>
+                </div>
+
                 <div class="mr-2">
                     Свободные деньги команды: <b>{{ command.balance }} $</b>
                 </div>
@@ -159,7 +167,7 @@
             },
             user: {},
             command: {},
-            status: {
+            status_prop: {
                 type: Number,
                 default: 0
             }
@@ -169,6 +177,7 @@
                 prices: {},
                 portfel: {},
                 buy: {},
+                status: this.status_prop,
                 trading_history: {},
                 chartOptions: {
                     chart: {
@@ -210,21 +219,11 @@
                     },
                 },
                 series: {},
+                portfel_current_value: 0,
             }
         },
         mounted() {
 
-        },
-        computed: {
-            portfel_current_value: function(){
-                let value = 0;
-                this.stocks.forEach((el) => {
-                    let dop = this.prices[el.id] * this.portfel[el.id]
-                    if (dop > 0)
-                        value += dop
-                });
-                return value;
-            }
         },
         created() {
             this.stocks.forEach((el) => {
@@ -283,6 +282,16 @@
                 })
         },
         methods: {
+            portfel_calc(){
+                let value = 0;
+                this.stocks.forEach((el) => {
+                    let dop = this.prices[el.id] * this.portfel[el.id]
+                    if (dop > 0)
+                        value += dop
+                });
+
+                this.portfel_current_value = value;
+            },
             buyStock(item){
                 axios.post('/commands/'+this.command.id+'/stocks/'+item.id+'/buy', {
                     count: this.buy[item.id]
@@ -291,6 +300,7 @@
                     this.command.balance = response.data.command.balance
                     this.$set(this.portfel, item.id, response.data.portfel)
                     this.$set(this.trading_history, item.id, response.data.trading_history)
+                    this.portfel_calc();
                     this.$forceUpdate();
                 })
             },
@@ -302,6 +312,7 @@
                     this.command.balance = response.data.command.balance
                     this.$set(this.portfel, item.id, response.data.portfel)
                     this.$set(this.trading_history, item.id, response.data.trading_history)
+                    this.portfel_calc();
                     this.$forceUpdate();
                 })
             },
@@ -324,9 +335,10 @@
                             name: item.name,
                             data: response.data.history
                         }])
-                        this.$set(this.prices, item.id, response.data.price)
-                        this.$set(this.portfel, item.id, response.data.portfel)
-                        this.$set(this.trading_history, item.id, response.data.trading_history)
+                        this.prices[item.id] = response.data.price
+                        this.portfel[item.id] = response.data.portfel
+                        this.trading_history[item.id] = response.data.trading_history
+                        this.portfel_calc();
                         this.$forceUpdate();
                     })
             }

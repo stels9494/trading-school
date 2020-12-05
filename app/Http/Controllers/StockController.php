@@ -48,16 +48,18 @@ class StockController extends Controller
         $user = auth()->user();
 
 
-        broadcast(new \App\Events\CommandBuySell('buy', $stock, $command))->toOthers();
 
 
-        if ($result)
-        	return response()->json([
-        		'status' => 'ok',
+
+        if ($result) {
+            broadcast(new \App\Events\CommandBuySell('buy', $stock, $command))->toOthers();
+            return response()->json([
+                'status' => 'ok',
                 'portfel' => $user->command->stocks->where('stock_id', $stock->id)->first()->count ?? 0,
                 'command' => $command,
                 'trading_history' => $user->command->tradingHistories()->where('stock_id', $stock->id)->orderBy('id', 'desc')->get()
-        	]);
+            ]);
+        }
         else
         	return response()->json([
         		'status' => 'error',
@@ -74,15 +76,15 @@ class StockController extends Controller
     	$result = $command->sell($stock, $request->count);
         $user = auth()->user();
 
-        broadcast(new \App\Events\CommandBuySell('sell', $stock, $command))->toOthers();
-
-        if ($result)
-        	return response()->json([
-        		'status' => 'ok',
+        if ($result){
+            broadcast(new \App\Events\CommandBuySell('sell', $stock, $command))->toOthers();
+            return response()->json([
+                'status' => 'ok',
                 'portfel' => $user->command->stocks->where('stock_id', $stock->id)->first()->count ?? 0,
                 'command' => $command,
                 'trading_history' => $user->command->tradingHistories()->where('stock_id', $stock->id)->orderBy('id', 'desc')->get()
-        	]);
+            ]);
+        }
         else
         	return response()->json([
         		'status' => 'error',
