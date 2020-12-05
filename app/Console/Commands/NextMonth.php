@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\User;
 use Illuminate\Console\Command;
 use App\Models\Setting;
 
@@ -46,10 +47,15 @@ class NextMonth extends Command
             {
                 // перевести
                 Setting::setValueByName('current_date', $currentDate->addMonth());
+
+                foreach (\App\Models\Command::query()->get() as $command){
+                    broadcast(new \App\Events\UpdateCharts($command, [$currentDate]));
+                }
+
             } else {
                 // иначе остановить игру
                 Setting::setValueByName('status', false);
-                Setting::setValueByName('current_date', Setting::getValueByName('date_trading_start'));                
+                Setting::setValueByName('current_date', Setting::getValueByName('date_trading_start'));
             }
         }
 

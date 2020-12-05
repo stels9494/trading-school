@@ -14,7 +14,7 @@ class UpdateCharts implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    private $user;
+    private $command;
     public $data;
 
     /**
@@ -22,9 +22,9 @@ class UpdateCharts implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct($user, $data)
+    public function __construct($command, $data)
     {
-        $this->user = $user;
+        $this->command = $command;
         $this->data = $data;
     }
 
@@ -35,6 +35,6 @@ class UpdateCharts implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('command.'.$this->user->command->id);
+        return new PrivateChannel('command.'.$this->command->id);
     }
 }

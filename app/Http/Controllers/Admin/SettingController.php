@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\SettingController\SwitchGame;
 use App\Http\Controllers\Controller;
+use App\Models\Command;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Setting;
 use Carbon\Carbon;
@@ -30,6 +32,10 @@ class SettingController extends Controller
         {
             Setting::setValueByName('status', false);
             $msg = 'Игра приостановлена';
+
+            foreach (Command::get() as $command){
+                broadcast(new \App\Events\StopGame($command));
+            }
         } else {
             Setting::setValueByName('date_trading_start', new Carbon($request->year_start.'-'.$request->month_start));
             Setting::setValueByName('date_trading_finish', new Carbon($request->year_finish.'-'.$request->month_finish));
@@ -37,6 +43,10 @@ class SettingController extends Controller
             Setting::setValueByName('current_date', new Carbon($request->year_start.'-'.$request->month_start));
             Setting::setValueByName('status', true);
             $msg = 'Игра запущена';
+
+            foreach (Command::get() as $command){
+                broadcast(new \App\Events\StartGame($command));
+            }
         }
 
         return back()->with($msg);

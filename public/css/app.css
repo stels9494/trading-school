@@ -16456,3 +16456,8 @@ input[type=color].form-control:disabled {
   vertical-align: text-bottom;
 }
 
+.btn:focus,
+.btn.focus {
+  box-shadow: none;
+}
+

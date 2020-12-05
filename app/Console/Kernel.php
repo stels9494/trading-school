@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('next-month')->cron(Setting::getValueByName('month_in_minute').' * * * *');
+        $schedule->command('next-month')->cron('*/'.Setting::getValueByName('month_in_minute').' * * * *');
     }
 
     /**

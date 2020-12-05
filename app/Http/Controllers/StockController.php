@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CommandBuySell;
 use App\Models\Setting;
 use App\Models\Stock;
 use Illuminate\Http\Request;
@@ -44,10 +45,18 @@ class StockController extends Controller
     public function buy(Request $request, Command $command, Stock $stock)
     {
         $result = $command->buy($stock, $request->count);
+        $user = auth()->user();
+
+
+        broadcast(new \App\Events\CommandBuySell('buy', $stock, $command))->toOthers();
+
 
         if ($result)
         	return response()->json([
         		'status' => 'ok',
+                'portfel' => $user->command->stocks->where('stock_id', $stock->id)->first()->count ?? 0,
+                'command' => $command,
+                'trading_history' => $user->command->tradingHistories()->where('stock_id', $stock->id)->orderBy('id', 'desc')->get()
         	]);
         else
         	return response()->json([
@@ -63,10 +72,16 @@ class StockController extends Controller
     public function sell(Request $request, Command $command, Stock $stock)
     {
     	$result = $command->sell($stock, $request->count);
+        $user = auth()->user();
+
+        broadcast(new \App\Events\CommandBuySell('sell', $stock, $command))->toOthers();
 
         if ($result)
         	return response()->json([
         		'status' => 'ok',
+                'portfel' => $user->command->stocks->where('stock_id', $stock->id)->first()->count ?? 0,
+                'command' => $command,
+                'trading_history' => $user->command->tradingHistories()->where('stock_id', $stock->id)->orderBy('id', 'desc')->get()
         	]);
         else
         	return response()->json([

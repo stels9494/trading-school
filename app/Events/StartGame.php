@@ -15,7 +15,7 @@ class StartGame implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    private $user;
+    private $command;
     public $data;
 
     /**
@@ -23,11 +23,11 @@ class StartGame implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct($user)
+    public function __construct($command)
     {
-        $this->user = $user;
+        $this->command = $command;
         $this->data = [
-            'user' => $user,
+            'command' => $command,
             'month_in_minute' => Setting::getValueByName('month_in_minute')
         ];
     }
@@ -39,6 +39,6 @@ class StartGame implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('command.'.$this->user->command->id);
+        return new PrivateChannel('command.'.$this->command->id);
     }
 }

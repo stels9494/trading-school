@@ -20,12 +20,8 @@
       <a href="{{ route('admin.settings.index') }}"><span class="fa fa-cog mr-3"></span> Настройки</a>
     </li>
     <li>
-        <a href="/">
-          <form action="{{ route('logout') }}" method="post" onclick="$(this).submit();">
-            @csrf
-            <span class="fa fa-sign-out  mr-3">
-            </span> Выход
-          </form>
+        <a href="/logout">
+            Выход
         </a>
     </li>
   </ul>
