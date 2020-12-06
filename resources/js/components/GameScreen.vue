@@ -31,6 +31,16 @@
                 </div>
             </div>
         </nav>
+        <b-navbar
+            v-if="status"
+            toggleable="lg"  fixed="bottom" variant="light"
+        >
+            <div class="w-100">
+                <b-progress class="mt-2" :max="month_in_minute*60" show-value>
+                    <b-progress-bar :value="timer" :max="month_in_minute*60" variant="success"></b-progress-bar>
+                </b-progress>
+            </div>
+        </b-navbar>
         <main class="py-4">
             <div class="container">
                 <div
@@ -170,6 +180,10 @@
             status_prop: {
                 type: Number,
                 default: 0
+            },
+            month_in_minute_prop: {
+                type: Number,
+                default: 1
             }
         },
         data() {
@@ -220,10 +234,16 @@
                 },
                 series: {},
                 portfel_current_value: 0,
+                timer: 0,
+                month_in_minute: this.month_in_minute_prop
             }
         },
         mounted() {
-
+            let intervalId = setInterval(() => {
+                if (this.status){
+                    this.timer++;
+                }
+            }, 1000);
         },
         created() {
             this.stocks.forEach((el) => {
@@ -234,9 +254,16 @@
             window.Echo.private(`command.${this.command.id}`)
                 .listen('StartGame', ({data}) => {
                     this.status = 1;
+                    this.month_in_minute = data.month_in_minute;
+                    this.timer = 0;
                     let text = 'График будет обновлять каждые '+data.month_in_minute+' мин.';
                     let title = `Игра началась!`;
                     let variant =  'success';
+
+                    this.stocks.forEach((el) => {
+                        this.prices[el.id] = 0
+                        this.getPrices(el);
+                    })
 
                     this.showToast(text, title, variant);
                 })
@@ -246,7 +273,7 @@
                         this.prices[el.id] = 0
                         this.getPrices(el);
                     })
-
+                    this.timer = 0;
                     let text = 'Новые данные загружены!';
                     let title = `Игра`;
                     let variant =  'info';
@@ -256,6 +283,7 @@
                 })
                 .listen('StopGame',  ({data}) => {
                     this.status = 0;
+                    this.timer = 0;
                     let text = 'Спасибо!';
                     let title = `Игра остановлена!`;
                     let variant =  'danger';
@@ -302,6 +330,11 @@
                     this.$set(this.trading_history, item.id, response.data.trading_history)
                     this.portfel_calc();
                     this.$forceUpdate();
+                }).catch((error) => {
+                    let text = 'При покупке произошла ошибка';
+                    let title = `Ошибка`;
+                    let variant =  'danger';
+                    this.showToast(text, title, variant);
                 })
             },
             sellStock(item){
@@ -314,6 +347,11 @@
                     this.$set(this.trading_history, item.id, response.data.trading_history)
                     this.portfel_calc();
                     this.$forceUpdate();
+                }).catch((error) => {
+                    let text = 'При продаже произошла ошибка';
+                    let title = `Ошибка`;
+                    let variant =  'danger';
+                    this.showToast(text, title, variant);
                 })
             },
             showToast(text, title, variant){

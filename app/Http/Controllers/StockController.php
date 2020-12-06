@@ -47,10 +47,6 @@ class StockController extends Controller
         $result = $command->buy($stock, $request->count);
         $user = auth()->user();
 
-
-
-
-
         if ($result) {
             broadcast(new \App\Events\CommandBuySell('buy', $stock, $command))->toOthers();
             return response()->json([
