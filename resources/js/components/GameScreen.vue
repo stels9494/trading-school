@@ -14,13 +14,13 @@
                 </div>
 
                 <div class="mr-2">
-                    Свободные деньги команды: <b>{{ command.balance }} $</b>
+                    Свободные деньги команды: <b>{{ command.balance }} ₽</b>
                 </div>
                 <div class="mr-2">
-                    Текущая стоимость акций: <b>{{ portfel_current_value }} $</b>
+                    Текущая стоимость акций: <b>{{ portfel_current_value }} ₽</b>
                 </div>
                 <div class="mr-2">
-                    Общий баланс: <b>{{ command.balance + portfel_current_value }} $</b>
+                    Общий баланс: <b>{{ command.balance + portfel_current_value }} ₽</b>
                 </div>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <b-dropdown variant="link" :text="user.fio" class="navbar-nav m-2 ml-auto">
@@ -157,7 +157,7 @@
                             <div
                                 v-for="item in trading_history[stock.id]"
                             >
-                                <span :class="'type-'+item.action">{{ item.time }}</span> <b>{{ item.count }} шт</b> {{ item.price }}$
+                                <span :class="'type-'+item.action">{{ item.time }}</span> <b>{{ item.count }} шт</b> {{ item.price }}₽
                             </div>
                         </div>
                     </div>
@@ -284,6 +284,12 @@
                 .listen('StopGame',  ({data}) => {
                     this.status = 0;
                     this.timer = 0;
+
+                    this.stocks.forEach((el) => {
+                        this.prices[el.id] = 0
+                        this.getPrices(el);
+                    })
+
                     let text = 'Спасибо!';
                     let title = `Игра остановлена!`;
                     let variant =  'danger';

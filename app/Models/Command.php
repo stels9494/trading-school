@@ -16,7 +16,7 @@ class Command extends Model
 
     	/**
     	 * Список пользователей в команде
-    	 * 
+    	 *
     	 * @return Illuminate\Database\Eloquent\Builder
     	 */
     	public function users()
@@ -26,7 +26,7 @@ class Command extends Model
 
     	/**
     	 * Список операция с акциями текущей команды
-    	 * 
+    	 *
     	 * @return Illuminate\Database\Eloquent\Builder
     	 */
     	public function tradingHistories()
@@ -40,7 +40,7 @@ class Command extends Model
 
     /**
      * Существование командира в команде
-     * 
+     *
      * @return bool
      */
     public function getIsCommanderAttribute(): bool
@@ -52,7 +52,7 @@ class Command extends Model
 
     /**
      * список акций теккущей команды
-     * 
+     *
      * @return Illuminate\Database\Eloquent\Collection
      */
     public function getStocksAttribute(): Collection
@@ -69,9 +69,18 @@ class Command extends Model
             ->get();
     }
 
+    public function getStocksBalanceAttribute()
+    {
+        $balance = 0;
+        foreach ($this->stocks as $stock){
+            $balance += $stock->count * $stock->stock->current_price;
+        }
+        return $balance;
+    }
+
     /**
      * Купить указанное кол-во акций
-     * 
+     *
      * @return true если достаточно средств
      */
     public function buy(Stock $stock, int $count): bool
@@ -107,7 +116,7 @@ class Command extends Model
 
     /**
      * Продать указанное кол-во акций
-     * 
+     *
      * @return true если достаточно средств
      */
     public function sell(Stock $stock, int $count): bool

@@ -37,7 +37,9 @@
 					<thead>
 						<tr>
 							<th scope="col">Название</th>
-							<th class="text-center" scope="col">Баланс</th>
+							<th class="text-center" scope="col">Баланс, ₽</th>
+							<th class="text-center" scope="col">В акциях, ₽</th>
+							<th class="text-center" scope="col">Итого, ₽</th>
 							<th class="text-center" scope="col">Игроков</th>
 							<th scope="col">&nbsp;</th>
 						</tr>
@@ -47,6 +49,8 @@
 							<tr>
 								<td>{{ $command->name }}</td>
 								<td class="text-center">{{ $command->balance }}</td>
+								<td class="text-center">{{ $command->stocks_balance }}</td>
+								<td class="text-center">{{ $command->balance + $command->stocks_balance }}</td>
 								<td class="text-center">{{ $command->users()->count() }}</td>
 								<td class="text-right">
 									<a href="{{ route('admin.commands.show', $command) }}" class="btn btn-sm btn-secondary"><i class="fa fa-eye"></i></a>
@@ -67,7 +71,7 @@
 							</tr>
 						@endif
 					</tbody>
-				</table>	
+				</table>
 			</div>
 		</div>
 	</div>

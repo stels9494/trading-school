@@ -31,6 +31,7 @@ class SettingController extends Controller
         if (Setting::getValueByName('status'))
         {
             Setting::setValueByName('status', false);
+
             $msg = 'Игра приостановлена';
 
             foreach (Command::get() as $command){

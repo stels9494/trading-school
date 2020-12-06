@@ -55,7 +55,7 @@ class NextMonth extends Command
             } else {
                 // иначе остановить игру
                 Setting::setValueByName('status', false);
-                Setting::setValueByName('current_date', Setting::getValueByName('date_trading_start'));
+                //Setting::setValueByName('current_date', Setting::getValueByName('date_trading_start'));
             }
         }
 
