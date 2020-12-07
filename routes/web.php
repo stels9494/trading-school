@@ -61,6 +61,7 @@ Route::group(['middleware' => 'auth'], function () {
 			Route::post('/stocks/{stock}/set-exchange', 'StockController@setExchange')->name('stocks.set-exchange');
 			Route::post('/stocks/import-quotations', 'StockController@importQuotations')->name('stocks.import-quotations');
 			Route::post('/stocks/{stock}/import-quotations-for-stock', 'StockController@importQuotationsForStock')->name('stocks.import-quotations-for-stock');
+			Route::post('/change-password', 'UserController@changePassword')->name('users.change-password');
 		});
 
 		Route::post('/switch-game', 'SettingController@switchGame')->name('switch-game');

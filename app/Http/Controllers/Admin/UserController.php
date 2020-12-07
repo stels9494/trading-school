@@ -118,4 +118,10 @@ class UserController extends Controller
             'is_commander' => $user->commander,
         ]);
     }
+
+    public function changePassword(Request $request)
+    {
+        auth()->user()->update(['password' => $request->password]);
+        return redirect()->route('admin.settings.index')->with('success', 'Пароль изменен');
+    }
 }

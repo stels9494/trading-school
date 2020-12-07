@@ -112,5 +112,23 @@
 			</div>
 		</div>
 	</form>
+	<form class="mb-4" action="{{ route('admin.users.change-password') }}" method="post">
+		@csrf
+
+		<div class="container">
+			<div class="row mb-3">
+				<div class="col-3">
+					<label for="password">Пароль администратора</label>
+	                <input id="password" class="form-control" value="{{ old('password') ?? auth()->user()->password }}" type="text" name="password" placeholder="Пароль администратора">
+				</div>
+				<div class="col-6">
+					<label>&nbsp;</label>
+					<div>
+						<button type="submit" class="btn btn-primary">Изменить</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
 
 @endsection
