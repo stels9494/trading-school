@@ -93,6 +93,16 @@
 
 			<div class="row">
 				<label class="col-12">Статус: {{ $status ? 'Запущен (Дата на торгах: '.$currentDate->format('m.Y').')' : 'Остановлен' }}</label>
+				@php
+					$period = Carbon\CarbonPeriod::create(
+						\App\Models\Setting::getValueByName('current_date'),
+						'1 month',
+						\App\Models\Setting::getValueByName('date_trading_finish')
+					);
+				@endphp
+				@if ($status)
+					<label class="col-12">Осталось {{ $period->count() * \App\Models\Setting::getValueByName('month_in_minute') }} минут</label>
+				@endif
 			</div>
 
 			<div class="row mb-3">
@@ -105,6 +115,7 @@
 				<div class="col-6 text-left">
 					@if ($status)
 						<button type="submit" class="btn btn-danger">Остановить игру</button>
+						<a class="btn btn-light" href="{{ route('admin.settings.index') }}"><i class="fa fa-refresh"></i></a>
 					@else
 						<button type="submit" class="btn btn-success">Запустить игру</button>
 					@endif

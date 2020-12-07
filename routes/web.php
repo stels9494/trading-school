@@ -30,7 +30,7 @@ Route::group(['middleware' => 'auth'], function () {
 			return redirect()->route('admin.index');
 		}
 
-		if (request()->user()->hasRole('member|commander'))
+		if (request()->user()->hasRole('member') || request()->user()->hasRole('commander'))
 		{
 			return redirect()->route('home');
 		}
