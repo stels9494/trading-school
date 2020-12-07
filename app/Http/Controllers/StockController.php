@@ -10,11 +10,7 @@ use App\Models\Command;
 
 class StockController extends Controller
 {
-    public function index()
-    {
-
-    }
-
+    
     public function show(Request $request, Stock $stock)
     {
         switch ($request->action) {

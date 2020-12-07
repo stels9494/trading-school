@@ -65,7 +65,7 @@
 
 						@if (!$data['commands']->count())
 							<tr>
-								<td colspan="4" class="text-center">
+								<td colspan="6" class="text-center">
 									<span class="h6 ">Команд нет</span>
 								</td>
 							</tr>

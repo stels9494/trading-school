@@ -13,35 +13,56 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('auth.login');
-});
-
 Auth::routes([
 	'register' => false,
 	'reset' => false,
 	'confirm' => false,
 	'verify' => false,
+	'logout' => false,
 ]);
+Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 
-Route::get('/logout', 'Auth\LoginController@logout');
+Route::group(['middleware' => 'auth'], function () {
 
-Route::get('/home', 'HomeController@index')->name('home');
+	Route::get('/', function () {
+		if (request()->user()->hasRole('admin'))
+		{
+			return redirect()->route('admin.index');
+		}
 
-Route::resource('/admin/commands', 'Admin\CommandController', ['as' => 'admin']);
-Route::resource('/admin/commands/{command}/users', 'Admin\UserController', ['as' => 'admin']);
-Route::post('/admin/commands/{command}/users/{user}/set-commander', 'Admin\UserController@setCommander')->name('admin.users.set-commander');
-Route::resource('/admin/stocks', 'Admin\StockController', ['as' => 'admin']);
-Route::get('/admin/settings', 'Admin\SettingController@index')->name('admin.settings.index');
-Route::post('/switch-game', 'Admin\SettingController@switchGame')->name('switch-game');
-Route::get('/admin', 'Admin\MainController@index')->name('admin.index');
-Route::post('/admin/commands/{command}/clear-histories', 'Admin\CommandController@clearHistories')->name('admin.commands.clear-histories');
-Route::post('/admin/stocks/{stock}/set-exchange', 'Admin\StockController@setExchange')->name('admin.stocks.set-exchange');
-Route::post('/admin/stocks/import-quotations', 'Admin\StockController@importQuotations')->name('admin.stocks.import-quotations');
-Route::post('/admin/stocks/{stock}/import-quotations-for-stock', 'Admin\StockController@importQuotationsForStock')->name('admin.stocks.import-quotations-for-stock');
+		if (request()->user()->hasRole('member|commander'))
+		{
+			return redirect()->route('home');
+		}
+	})->name('index');
 
+	// учатсник и командир
+	Route::group(['middleware' => 'role:commander|member'], function () {
+		Route::get('/home', 'HomeController@index')->name('home');
+		Route::resource('/stocks', 'StockController')->only(['show']);
 
-Route::resource('/stocks', 'StockController');
-Route::get('/test', 'HomeController@test');
-Route::post('/commands/{command}/stocks/{stock}/buy', 'StockController@buy')->name('stocks.buy');
-Route::post('/commands/{command}/stocks/{stock}/sell', 'StockController@sell')->name('stocks.sell');
+		Route::group(['middleware' => 'role:commander'], function () {
+			Route::post('/commands/{command}/stocks/{stock}/buy', 'StockController@buy')->name('stocks.buy');
+			Route::post('/commands/{command}/stocks/{stock}/sell', 'StockController@sell')->name('stocks.sell');			
+		});
+	});
+
+	// админ панель
+	Route::group(['middleware' => ['role:admin'], 'namespace' => 'Admin'], function () {
+
+		Route::group(['prefix' => 'admin/', 'as' => 'admin.'], function () {
+			Route::get('/', 'MainController@index')->name('index');
+			Route::resource('/commands', 'CommandController');
+			Route::resource('/commands/{command}/users', 'UserController');
+			Route::post('/commands/{command}/users/{user}/set-commander', 'UserController@setCommander')->name('users.set-commander');
+			Route::resource('/stocks', 'StockController');
+			Route::get('/settings', 'SettingController@index')->name('settings.index');
+			Route::post('/commands/{command}/clear-histories', 'CommandController@clearHistories')->name('commands.clear-histories');
+			Route::post('/stocks/{stock}/set-exchange', 'StockController@setExchange')->name('stocks.set-exchange');
+			Route::post('/stocks/import-quotations', 'StockController@importQuotations')->name('stocks.import-quotations');
+			Route::post('/stocks/{stock}/import-quotations-for-stock', 'StockController@importQuotationsForStock')->name('stocks.import-quotations-for-stock');
+		});
+
+		Route::post('/switch-game', 'SettingController@switchGame')->name('switch-game');
+	});
+});
