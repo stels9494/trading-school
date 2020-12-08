@@ -93,6 +93,16 @@
 
 			<div class="row">
 				<label class="col-12">Статус: {{ $status ? 'Запущен (Дата на торгах: '.$currentDate->format('m.Y').')' : 'Остановлен' }}</label>
+				@php
+					$period = Carbon\CarbonPeriod::create(
+						\App\Models\Setting::getValueByName('current_date'),
+						'1 month',
+						\App\Models\Setting::getValueByName('date_trading_finish')
+					);
+				@endphp
+				@if ($status)
+					<label class="col-12">Осталось {{ $period->count() * \App\Models\Setting::getValueByName('month_in_minute') }} минут</label>
+				@endif
 			</div>
 
 			<div class="row mb-3">
@@ -110,9 +120,28 @@
                         @else
                             <a href="/admin/switch-pause">Поставить на паузу</a>
                         @endif
+						<a class="btn btn-light" href="{{ route('admin.settings.index') }}"><i class="fa fa-refresh"></i></a>
 					@else
 						<button type="submit" class="btn btn-success">Запустить игру</button>
 					@endif
+				</div>
+			</div>
+		</div>
+	</form>
+	<form class="mb-4" action="{{ route('admin.users.change-password') }}" method="post">
+		@csrf
+
+		<div class="container">
+			<div class="row mb-3">
+				<div class="col-3">
+					<label for="password">Пароль администратора</label>
+	                <input id="password" class="form-control" value="{{ old('password') ?? auth()->user()->password }}" type="text" name="password" placeholder="Пароль администратора">
+				</div>
+				<div class="col-6">
+					<label>&nbsp;</label>
+					<div>
+						<button type="submit" class="btn btn-primary">Изменить</button>
+					</div>
 				</div>
 			</div>
 		</div>

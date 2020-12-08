@@ -20,7 +20,8 @@
       <a href="{{ route('admin.settings.index') }}"><span class="fa fa-cog mr-3"></span> Настройки</a>
     </li>
     <li>
-        <a href="/logout">
+        <a href="{{ route('logout') }}">
+            <span class="fa fa-sign-out mr-3"></span>
             Выход
         </a>
     </li>

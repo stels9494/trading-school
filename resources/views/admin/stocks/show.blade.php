@@ -58,13 +58,39 @@
 				</div>
 			</div>
 		</form>
-
-		{{-- импорт котировок --}}
-
-
-		{{-- очистить котировки --}}
-
 		{{-- график --}}
+
+		<div class="row">
+			<div class="col-12">
+				<h5 class="my-3">
+					Котировки
+				</h5>
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th scope="col">Дата</th>
+							<th class="text-center" scope="col">Цена</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach ($data['stock']->quotations as $quotation)
+							<tr>
+								<td>{{ $quotation->datetime->format('m.Y') }}</td>
+								<td class="text-center">{{ $quotation->price }}</td>
+							</tr>
+						@endforeach
+
+						@if (!$data['stock']->quotations->count())
+							<tr>
+								<td colspan="2" class="text-center">
+									<span class="h6 ">Котировок нет</span>
+								</td>
+							</tr>
+						@endif
+					</tbody>
+				</table>	
+			</div>
+		</div>
 
 	</div>
 @endsection

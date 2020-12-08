@@ -11,6 +11,7 @@
 
 
             @if ($message = Session::get('error'))
+            {{ dd(Session::get('error')) }}
                 <div class="alert alert-danger alert-block">
                     <button type="button" class="close" data-dismiss="alert">×</button>
                     <strong>{{ $message }}</strong>
@@ -35,11 +36,18 @@
 
 
             @if ($errors->any())
-                <div class="alert alert-danger">
-                    <button type="button" class="close" data-dismiss="alert">×</button>
-                    {{ __('validation.some_errors') }}
-                </div>
-            @endif        
+                @php
+                    $error = json_decode($errors, true);
+                @endphp
+                @foreach ($error as $arerrors)
+                    @foreach ($arerrors as $oneError)
+                        <div class="alert alert-danger">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            <strong>{{ $oneError }}</strong>
+                        </div>
+                    @endforeach
+                @endforeach
+            @endif  
         </div>
     </div>    
 </div>
