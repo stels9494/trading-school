@@ -56,7 +56,7 @@
 
 
 			<div class="row">
-				<label class="col-12">Дата окончания торгов</label>	
+				<label class="col-12">Дата окончания торгов</label>
 				<div class="input-group mb-3 col-5">
 				  <div class="input-group-prepend">
 				    <label class="input-group-text" for="month-finish">Месяц</label>
@@ -105,6 +105,11 @@
 				<div class="col-6 text-left">
 					@if ($status)
 						<button type="submit" class="btn btn-danger">Остановить игру</button>
+                        @if (\App\Models\Setting::getValueByName('is_pause'))
+                            <a href="/admin/switch-pause">Продолжить</a>
+                        @else
+                            <a href="/admin/switch-pause">Поставить на паузу</a>
+                        @endif
 					@else
 						<button type="submit" class="btn btn-success">Запустить игру</button>
 					@endif

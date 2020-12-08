@@ -44,6 +44,12 @@ class StockController extends Controller
 
     public function buy(Request $request, Command $command, Stock $stock)
     {
+        if (Setting::getValueByName('is_pause')){
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'insufficient funds',
+            ], 400);
+        }
         $result = $command->buy($stock, $request->count);
         $user = auth()->user();
 
@@ -69,6 +75,13 @@ class StockController extends Controller
      */
     public function sell(Request $request, Command $command, Stock $stock)
     {
+        if (Setting::getValueByName('is_pause')){
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'insufficient funds',
+            ], 400);
+        }
+
     	$result = $command->sell($stock, $request->count);
         $user = auth()->user();
 

@@ -16,7 +16,7 @@ class CreateCommandsTable extends Migration
         Schema::create('commands', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
-            $table->float('balance')->default(0);
+            $table->double('balance', 18, 2)->default(0);
             $table->timestamps();
         });
     }

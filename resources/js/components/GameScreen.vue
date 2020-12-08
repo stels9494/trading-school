@@ -10,7 +10,7 @@
                     class="mr-2"
                     :class="status ? 'text-success' : 'text-danger'"
                 >
-                    <b>{{ status ? 'Игра запущена' : 'Игра не запущена' }}</b>
+                    <b>{{ status ? (is_pause ? 'Пауза' : 'Игра запущена') : 'Игра не запущена' }}</b>
                 </div>
 
                 <div class="mr-2">
@@ -32,7 +32,7 @@
             </div>
         </nav>
         <b-navbar
-            v-if="status"
+            v-if="status && !is_pause"
             toggleable="lg"  fixed="bottom" variant="light"
         >
             <div class="w-100">
@@ -104,7 +104,7 @@
 
                             <div
                                 class="col-lg-4"
-                                v-if="user.roles[0].name == 'commander'"
+                                v-if="user.roles[0].name == 'commander' && status && !is_pause"
                             >
                                 <b-form-input
                                     :id="'buy-'+stock.id"
@@ -115,7 +115,7 @@
                             </div>
                             <div
                                 class="col-lg-4"
-                                v-if="user.roles[0].name == 'commander' && status"
+                                v-if="user.roles[0].name == 'commander' && status && !is_pause"
                             >
                                 <a
                                     class="btn btn-success"
@@ -126,7 +126,7 @@
                             </div>
                             <div
                                 class="col-lg-4"
-                                v-if="user.roles[0].name == 'commander' && status"
+                                v-if="user.roles[0].name == 'commander' && status && !is_pause"
                             >
                                 <a
                                     class="btn btn-danger"
@@ -181,6 +181,10 @@
                 type: Number,
                 default: 0
             },
+            is_pause_prop: {
+                type: Number,
+                default: 0
+            },
             month_in_minute_prop: {
                 type: Number,
                 default: 1
@@ -192,6 +196,7 @@
                 portfel: {},
                 buy: {},
                 status: this.status_prop,
+                is_pause: this.is_pause_prop,
                 trading_history: {},
                 chartOptions: {
                     chart: {
@@ -240,7 +245,7 @@
         },
         mounted() {
             let intervalId = setInterval(() => {
-                if (this.status){
+                if (this.status && !this.is_pause){
                     this.timer++;
                 }
             }, 1000);
@@ -311,6 +316,20 @@
                         let text = 'Капитан продал "' + data.stock.name + '"';
                         let title = `Продажа`;
                         let variant =  'danger';
+                        this.showToast(text, title, variant);
+                    }
+                })
+                .listen('PauseGame', ({data}) => {
+                    this.is_pause = data.is_pause
+                    if (this.is_pause){
+                        let text = 'Поставлена на паузу';
+                        let title = `Игра`;
+                        let variant =  'warning';
+                        this.showToast(text, title, variant);
+                    }else{
+                        let text = 'Игра продолжается!';
+                        let title = `Игра`;
+                        let variant =  'warning';
                         this.showToast(text, title, variant);
                     }
                 })

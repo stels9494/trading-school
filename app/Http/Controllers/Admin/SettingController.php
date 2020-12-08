@@ -22,6 +22,17 @@ class SettingController extends Controller
         return view('admin.settings.index');
     }
 
+    public function switchPause()
+    {
+        $pause = !Setting::getValueByName('is_pause');
+        Setting::setValueByName('is_pause', $pause);
+
+        foreach (\App\Models\Command::query()->get() as $command){
+            broadcast(new \App\Events\PauseGame($command));
+        }
+
+        return back();
+    }
 
     // сохраниь набор настроек, которые пользователь может самостоятельно менять
     // запустить игру
@@ -43,6 +54,7 @@ class SettingController extends Controller
             Setting::setValueByName('month_in_minute', $request->month_in_minute);
             Setting::setValueByName('current_date', new Carbon($request->year_start.'-'.$request->month_start));
             Setting::setValueByName('status', true);
+            Setting::setValueByName('is_pause', false);
             $msg = 'Игра запущена';
 
             foreach (Command::get() as $command){

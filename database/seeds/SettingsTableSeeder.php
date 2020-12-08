@@ -39,6 +39,11 @@ class SettingsTableSeeder extends Seeder
                 'description' => 'какой время внутри торгов',
                 'type' => 'datetime',
                 'value' => new Carbon('2020-01-01'),
+            ],[
+                'name' => 'is_pause',
+                'description' => 'игра на паузе',
+                'type' => 'bool',
+                'value' => false,
             ]
         ];
 
