@@ -31,6 +31,17 @@ class SettingController extends Controller
             broadcast(new \App\Events\PauseGame($command));
         }
 
+        if (!$pause){
+            //если сняли с паузы
+            $currentDate = Setting::getValueByName('current_date');
+            // перевести на след месяц
+            Setting::setValueByName('current_date', $currentDate->addMonth());
+
+            foreach (\App\Models\Command::query()->get() as $command){
+                broadcast(new \App\Events\UpdateCharts($command, [$currentDate]));
+            }
+        }
+
         return back();
     }
 

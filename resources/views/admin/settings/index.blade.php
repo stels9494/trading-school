@@ -116,9 +116,9 @@
 					@if ($status)
 						<button type="submit" class="btn btn-danger">Остановить игру</button>
                         @if (\App\Models\Setting::getValueByName('is_pause'))
-                            <a href="/admin/switch-pause">Продолжить</a>
+                            <a href="/admin/switch-pause" class="mr-2 btn btn-light">Продолжить</a>
                         @else
-                            <a href="/admin/switch-pause">Поставить на паузу</a>
+                            <a href="/admin/switch-pause" class="mr-2 btn btn-light">Поставить на паузу</a>
                         @endif
 						<a class="btn btn-light" href="{{ route('admin.settings.index') }}"><i class="fa fa-refresh"></i></a>
 					@else

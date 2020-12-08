@@ -50,7 +50,9 @@ class NextMonth extends Command
                     $next_date = (new Carbon($currentDate))->addMonth();
                     if ($next_date->format('m') == '1'){
                         Setting::setValueByName('is_pause', true);
-
+                        foreach (\App\Models\Command::query()->get() as $command){
+                            broadcast(new \App\Events\PauseGame($command));
+                        }
                     }else{
                         // перевести
                         Setting::setValueByName('current_date', $currentDate->addMonth());
