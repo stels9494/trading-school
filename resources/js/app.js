@@ -13,6 +13,8 @@ window.Vue = require('vue');
 import { BootstrapVue } from 'bootstrap-vue'
 
 Vue.component('game-screen', require('./components/GameScreen.vue').default);
+Vue.component('admin-live', require('./components/AdminLive.vue').default);
+
 
 Vue.use(VueApexCharts)
 

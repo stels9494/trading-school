@@ -76,7 +76,7 @@ class Command extends Model
 
     public function getStocksCountAttribute()
     {
-        return $this->stocks->sum('count');
+        return $this->stocks->count() ? $this->stocks->sum('count') : 0;
     }
 
     /**

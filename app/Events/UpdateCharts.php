@@ -25,7 +25,10 @@ class UpdateCharts implements ShouldBroadcast
     public function __construct($command, $data)
     {
         $this->command = $command;
-        $this->data = $data;
+        $this->data = [
+            'current_date' => $data,
+            'command' => $this->command
+        ];
     }
 
     /**

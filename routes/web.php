@@ -57,6 +57,7 @@ Route::group(['middleware' => 'auth'], function () {
 			Route::post('/commands/{command}/users/{user}/set-commander', 'UserController@setCommander')->name('users.set-commander');
 			Route::resource('/stocks', 'StockController');
 			Route::get('/settings', 'SettingController@index')->name('settings.index');
+			Route::get('/settings-live', 'SettingController@live')->name('live');
 			Route::post('/commands/{command}/clear-histories', 'CommandController@clearHistories')->name('commands.clear-histories');
 			Route::post('/stocks/{stock}/set-exchange', 'StockController@setExchange')->name('stocks.set-exchange');
 			Route::post('/stocks/import-quotations', 'StockController@importQuotations')->name('stocks.import-quotations');
@@ -66,5 +67,7 @@ Route::group(['middleware' => 'auth'], function () {
 		});
 
 		Route::post('/switch-game', 'SettingController@switchGame')->name('switch-game');
+
+        Route::post('/set-current', 'SettingController@setCurrent')->name('set-current');
 	});
 });

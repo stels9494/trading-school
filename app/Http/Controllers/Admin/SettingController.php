@@ -22,6 +22,11 @@ class SettingController extends Controller
         return view('admin.settings.index');
     }
 
+    public function live()
+    {
+        return view('admin.settings.live');
+    }
+
     public function switchPause(Request $request)
     {
         $pause = !Setting::getValueByName('is_pause');
@@ -48,6 +53,21 @@ class SettingController extends Controller
 
         return back();
     }
+
+    //обновить текущую дату
+
+    public function setCurrent(Request $request)
+    {
+        $currentDate = (new Carbon())->setYear($request->year_current)->setMonth($request->month_current)->setDay(1)->setTime(0, 0, 1);
+
+        Setting::setValueByName('current_date', $currentDate);
+        foreach (\App\Models\Command::query()->get() as $command){
+            broadcast(new \App\Events\UpdateCharts($command, [$currentDate]));
+        }
+        $msg = 'Обновили';
+        return back()->with($msg);
+    }
+
 
     // сохраниь набор настроек, которые пользователь может самостоятельно менять
     // запустить игру

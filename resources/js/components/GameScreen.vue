@@ -27,9 +27,11 @@
                 </div>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <b-dropdown variant="link" :text="user.fio" class="navbar-nav m-2 ml-auto">
-                        <b-dropdown-item-button>
-                            <a href="/logout">Выход</a>
-                        </b-dropdown-item-button>
+                        <a href="/logout">
+                            <b-dropdown-item-button>
+                                Выход
+                            </b-dropdown-item-button>
+                        </a>
                     </b-dropdown>
                 </div>
             </div>
