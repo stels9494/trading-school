@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\Models\Setting;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -10,8 +9,9 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use App\Models\Stock;
 
-class PauseGame implements ShouldBroadcast
+class UpdateStocksList implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -26,10 +26,7 @@ class PauseGame implements ShouldBroadcast
     public function __construct($command)
     {
         $this->command = $command;
-        $this->data = [
-            'is_pause' => Setting::getValueByName('is_pause'),
-            'month_in_minute' => Setting::getValueByName('month_in_minute'),
-        ];
+        $this->data =  Stock::where('on_the_exchange', true)->get();
     }
 
     /**

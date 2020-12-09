@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Stock;
 use App\Http\Requests\Admin\StockController\Update;
 use App\Http\Requests\Admin\StockController\Store;
+use App\Models\Command;
+use App\Events\UpdateStocksList;
 
 class StockController extends Controller
 {
@@ -43,6 +45,11 @@ class StockController extends Controller
             'name' => $request->name,
             'on_the_exchange' => $request->on_the_exchange ?? false,
         ]);
+
+        foreach (Command::all() as $command)
+        {
+            broadcast(new UpdateStocksList($command));
+        }
 
         return redirect()->route('admin.stocks.index', $stock)->with('success', 'Акция была создана');
     }
@@ -83,6 +90,11 @@ class StockController extends Controller
             'on_the_exchange' => $request->on_the_exchange ?? false,
         ]);
 
+        foreach (Command::all() as $command)
+        {
+            broadcast(new UpdateStocksList($command));
+        }
+
         return redirect()->route('admin.stocks.show', $stock)->with('success', 'Данные акции обновлены');
     }
 
@@ -104,6 +116,12 @@ class StockController extends Controller
     public function setExchange(Request $request, Stock $stock)
     {
         $stock->update(['on_the_exchange' => $request->on_the_exchange]);
+
+        foreach (Command::all() as $command)
+        {
+            broadcast(new UpdateStocksList($command));
+        }
+
         return response()->json([
             'status' => 'ok',
         ]);

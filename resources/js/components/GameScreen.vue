@@ -17,10 +17,13 @@
                     Свободные деньги команды: <b>{{ command.balance }} ₽</b>
                 </div>
                 <div class="mr-2">
-                    Текущая стоимость акций: <b>{{ portfel_current_value }} ₽</b>
+                    Кол-во акций в портфеле: <b>{{ stocks_count }} шт.</b>
                 </div>
                 <div class="mr-2">
-                    Общий баланс: <b>{{ command.balance + portfel_current_value }} ₽</b>
+                    Текущая стоимость акций: <b>{{ stocks_balance /*portfel_current_value*/ }} ₽</b>
+                </div>
+                <div class="mr-2">
+                    Общий баланс: <b>{{ command.balance + stocks_balance /*portfel_current_value*/ }} ₽</b>
                 </div>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <b-dropdown variant="link" :text="user.fio" class="navbar-nav m-2 ml-auto">
@@ -171,7 +174,7 @@
     export default {
         name: 'GameScreen',
         props: {
-            stocks:{
+            stocks_props:{
                 type: Array,
                 default: []
             },
@@ -188,10 +191,13 @@
             month_in_minute_prop: {
                 type: Number,
                 default: 1
-            }
+            },
+            stocks_balance_prop: 0,
+            stocks_count_prop: 0,
         },
         data() {
             return {
+                stocks: this.stocks_props,
                 prices: {},
                 portfel: {},
                 buy: {},
@@ -240,7 +246,9 @@
                 series: {},
                 portfel_current_value: 0,
                 timer: 0,
-                month_in_minute: this.month_in_minute_prop
+                month_in_minute: this.month_in_minute_prop,
+                stocks_balance: this.stocks_balance_prop,
+                stocks_count: this.stocks_count_prop,
             }
         },
         mounted() {
@@ -257,11 +265,22 @@
             });
 
             window.Echo.private(`command.${this.command.id}`)
+                .listen('UpdateStocksList', ({data}) =>{
+                    this.stocks = data;
+                    let text = 'Список акций обновлен.';
+                    let title = `Внимание!`;
+                    let variant =  'info';
+                    this.stocks.forEach((el) => {
+                        this.prices[el.id] = 0
+                        this.getPrices(el);
+                    });
+                    this.showToast(text, title, variant);
+                })
                 .listen('StartGame', ({data}) => {
                     this.status = 1;
                     this.month_in_minute = data.month_in_minute;
                     this.timer = 0;
-                    let text = 'График будет обновлять каждые '+data.month_in_minute+' мин.';
+                    let text = 'График будет обновляться каждые '+data.month_in_minute+' мин.';
                     let title = `Игра началась!`;
                     let variant =  'success';
 
@@ -306,6 +325,8 @@
                     this.getPrices(data.stock);
 
                     this.command.balance = data.command.balance
+                    this.stocks_balance = data.stocks_balance
+                    this.stocks_count = data.stocks_count
 
                     if (data.type == 'buy') {
                         let text = 'Капитан купил "' + data.stock.name + '"';
@@ -321,6 +342,7 @@
                 })
                 .listen('PauseGame', ({data}) => {
                     this.is_pause = data.is_pause
+                    this.month_in_minute = data.month_in_minute
                     if (this.is_pause){
                         let text = 'Поставлена на паузу';
                         let title = `Игра`;
@@ -330,6 +352,11 @@
                         let text = 'Игра продолжается!';
                         let title = `Игра`;
                         let variant =  'warning';
+                        this.showToast(text, title, variant);
+
+                        text = 'График будет обновляться каждые '+data.month_in_minute+' мин.';
+                        title = `Игра началась!`;
+                        variant =  'success';
                         this.showToast(text, title, variant);
                     }
                 })

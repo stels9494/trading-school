@@ -69,13 +69,18 @@ class Command extends Model
             ->get();
     }
 
-    public function getStocksBalanceAttribute()
+    /**
+     * Стоимость портфеля команды
+     * 
+     * @return float
+     */
+    public function getStocksBalanceAttribute(): float
     {
         $balance = 0;
         foreach ($this->stocks as $stock){
             $balance += $stock->count * $stock->stock->current_price;
         }
-        return $balance;
+        return round($balance, 2);
     }
 
     /**
@@ -92,7 +97,7 @@ class Command extends Model
         DB::beginTransaction();
         // акция торгуется и у команды достаточный баланс для покупки
         $currentDate = Setting::getValueByName('current_date');
-        if ($stock->on_the_exchange && $stock->isQuotationByDay($currentDate) && $this->balance >= $stock->current_price * $count && Setting::getValueByName('status'))
+        if ($stock->on_the_exchange && $stock->isQuotationByDay($currentDate) && $this->balance >= $stock->current_price * $count && Setting::getValueByName('status') && !Setting::getValueByName('is_pause'))
         {
             $this->update([
                 'balance' => $this->balance - $stock->current_price * $count,
@@ -130,7 +135,7 @@ class Command extends Model
 
         // акция торгуется и у команды имеется достаточное кол-во для продажи
         // пользователь должен быть командиром в этой команде
-        if ($stock->on_the_exchange && $stock->isQuotationByDay($currentDate) && $commandHasCount >= $count && Setting::getValueByName('status'))
+        if ($stock->on_the_exchange && $stock->isQuotationByDay($currentDate) && $commandHasCount >= $count && Setting::getValueByName('status')  && !Setting::getValueByName('is_pause'))
         {
             $this->update([
                 'balance' => $this->balance + $stock->current_price * $count,

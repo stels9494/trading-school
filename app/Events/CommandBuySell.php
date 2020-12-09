@@ -24,7 +24,13 @@ class CommandBuySell implements ShouldBroadcast
      */
     public function __construct($type, $stock, $command)
     {
-        $this->data = ['type' => $type, 'stock' => $stock, 'command' => $command];
+        $this->data = [
+            'type' => $type, 
+            'stock' => $stock, 
+            'command' => $command,
+            'stocks_count' => $command->stocks->sum('count'),
+            'stocks_balance' => round($command->stocks_balance, 2),
+        ];
         $this->command = $command;
     }
 

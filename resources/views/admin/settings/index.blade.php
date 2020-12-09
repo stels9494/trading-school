@@ -4,7 +4,6 @@
 	<script>
 		$(document).ready(function () {
 			$('#month_in_minute').change(function () {
-				// console.log($('#continue-game').data('href') + '?month_in_minute=' + $(this).val());
 				$('#continue-game').attr('href', $('#continue-game').data('href') + '?month_in_minute=' + $(this).val());
 			})
 		});

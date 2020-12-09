@@ -27,9 +27,7 @@ class SettingController extends Controller
         $pause = !Setting::getValueByName('is_pause');
         Setting::setValueByName('is_pause', $pause);
 
-        foreach (\App\Models\Command::query()->get() as $command){
-            broadcast(new \App\Events\PauseGame($command));
-        }
+
 
         if (!$pause){
             //если сняли с паузы
@@ -42,6 +40,10 @@ class SettingController extends Controller
             foreach (\App\Models\Command::query()->get() as $command){
                 broadcast(new \App\Events\UpdateCharts($command, [$currentDate]));
             }
+        }
+
+        foreach (\App\Models\Command::query()->get() as $command){
+            broadcast(new \App\Events\PauseGame($command));
         }
 
         return back();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Events\StartGame;
 
 class HomeController extends Controller
 {
@@ -33,7 +34,7 @@ class HomeController extends Controller
 
     public function test(){
         foreach (User::where('id', '>', 1)->get() as $user){
-            broadcast(new \App\Events\StartGame($user, $user));
+            broadcast(new StartGame($user, $user));
         }
     }
 }

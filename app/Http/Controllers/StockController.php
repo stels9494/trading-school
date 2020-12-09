@@ -50,7 +50,7 @@ class StockController extends Controller
         $user = auth()->user();
 
         if ($result) {
-            broadcast(new \App\Events\CommandBuySell('buy', $stock, $command))->toOthers();
+            broadcast(new CommandBuySell('buy', $stock, $command))->toOthers();
             return response()->json([
                 'status' => 'ok',
                 'portfel' => $user->command->stocks->where('stock_id', $stock->id)->first()->count ?? 0,
@@ -82,7 +82,7 @@ class StockController extends Controller
         $user = auth()->user();
 
         if ($result){
-            broadcast(new \App\Events\CommandBuySell('sell', $stock, $command))->toOthers();
+            broadcast(new CommandBuySell('sell', $stock, $command))->toOthers();
             return response()->json([
                 'status' => 'ok',
                 'portfel' => $user->command->stocks->where('stock_id', $stock->id)->first()->count ?? 0,
