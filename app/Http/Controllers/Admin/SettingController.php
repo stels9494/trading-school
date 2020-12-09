@@ -22,7 +22,7 @@ class SettingController extends Controller
         return view('admin.settings.index');
     }
 
-    public function switchPause()
+    public function switchPause(Request $request)
     {
         $pause = !Setting::getValueByName('is_pause');
         Setting::setValueByName('is_pause', $pause);
@@ -36,6 +36,8 @@ class SettingController extends Controller
             $currentDate = Setting::getValueByName('current_date');
             // перевести на след месяц
             Setting::setValueByName('current_date', $currentDate->addMonth());
+            if ($request->month_in_minute)
+                Setting::setValueByName('month_in_minute', $request->month_in_minute);
 
             foreach (\App\Models\Command::query()->get() as $command){
                 broadcast(new \App\Events\UpdateCharts($command, [$currentDate]));
