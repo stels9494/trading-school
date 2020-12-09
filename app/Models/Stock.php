@@ -91,12 +91,20 @@ class Stock extends Model
 				for ($j = $startYearIndexNumber; $year = $spreadsheet->getActiveSheet()->getCell($startYearIndexSymbol.$j)->getValue() ; $j += $stepYearIndex)
 				{
 
+					if (((int) $year) < 1970) continue;
 					for ($p = $j + 1; $price = $spreadsheet->getActiveSheet()->getCell($i.$p)->getValue(); $p++)
 					{
 						$month = $spreadsheet->getActiveSheet()->getCell($startYearIndexSymbol.$p)->getValue();
+						$datetime = new Carbon();
+						$datetime
+							->setYear($year)
+							->setMonth($month)
+							->setDay(1)
+							->setTime(0, 0, 1);
+
 						$stock->quotations()->create([
 							'price' => $price,
-							'datetime' => new Carbon($year.'-'.$month),
+							'datetime' => $datetime,
 						]);
 					}
 
@@ -137,12 +145,19 @@ class Stock extends Model
 			$this->quotations()->delete();
 			for ($j = $startYearIndexNumber; $year = $spreadsheet->getActiveSheet()->getCell($startYearIndexSymbol.$j)->getValue() ; $j += $stepYearIndex)
 			{
+				if (((int) $year) < 1970) continue;
 				for ($p = $j + 1; $price = $spreadsheet->getActiveSheet()->getCell($startStockIndexSymbol.$p)->getValue(); $p++)
 				{
 					$month = $spreadsheet->getActiveSheet()->getCell($startYearIndexSymbol.$p)->getValue();
+					$datetime = new Carbon();
+					$datetime
+						->setYear($year)
+						->setMonth($month)
+						->setDay(1)
+						->setTime(0, 0, 1);
 					$this->quotations()->create([
 						'price' => $price,
-						'datetime' => new Carbon($year.'-'.$month),
+						'datetime' => $datetime,
 					]);
 				}
 

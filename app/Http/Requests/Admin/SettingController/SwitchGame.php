@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin\SettingController;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Setting;
+use App\Models\StockQuotation;
 
 class SwitchGame extends FormRequest
 {
@@ -28,11 +29,13 @@ class SwitchGame extends FormRequest
         {
             return [];
         }
+        $minYear = StockQuotation::getMinYear();
+        $maxYear = StockQuotation::getMaxYear();
         return [
             'month_start' => 'required|integer|between:1,12',
             'month_finish' => 'required|integer|between:1,12',
-            'year_start' => 'required|integer|between:1900,3000',
-            'year_finish' => 'required|integer|between:1900,3000|gte:year_start',
+            'year_start' => 'required|integer|between:'.$minYear.','.$maxYear,
+            'year_finish' => 'required|integer|between:'.$minYear.','.$maxYear.'|gte:year_start',
             'month_in_minute' => 'required|integer|min:1',
         ];
     }

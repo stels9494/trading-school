@@ -60,10 +60,12 @@ class SettingController extends Controller
                 broadcast(new \App\Events\StopGame($command));
             }
         } else {
-            Setting::setValueByName('date_trading_start', new Carbon($request->year_start.'-'.$request->month_start));
-            Setting::setValueByName('date_trading_finish', new Carbon($request->year_finish.'-'.$request->month_finish));
+            $dateTradingStart = (new Carbon())->setYear($request->year_start)->setMonth($request->month_start)->setDay(1)->setTime(0, 0, 1);
+            $dateTradingFinish = (new Carbon())->setYear($request->year_finish)->setMonth($request->month_finish)->setDay(1)->setTime(0, 0, 1);
+            Setting::setValueByName('date_trading_start', $dateTradingStart);
+            Setting::setValueByName('date_trading_finish', $dateTradingFinish);
             Setting::setValueByName('month_in_minute', $request->month_in_minute);
-            Setting::setValueByName('current_date', new Carbon($request->year_start.'-'.$request->month_start));
+            Setting::setValueByName('current_date', $dateTradingStart);
             Setting::setValueByName('status', true);
             Setting::setValueByName('is_pause', false);
             $msg = 'Игра запущена';
