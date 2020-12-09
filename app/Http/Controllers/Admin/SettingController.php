@@ -58,7 +58,7 @@ class SettingController extends Controller
 
     public function setCurrent(Request $request)
     {
-        $currentDate = (new Carbon())->setYear($request->year_current)->setMonth($request->month_current)->setDay(1)->setTime(0, 0, 1);
+        $currentDate = (new Carbon())->setYear($request->year_current)->setMonth($request->month_current)->setDay(1)->setTime(12, 0, 1);
 
         Setting::setValueByName('current_date', $currentDate);
         foreach (\App\Models\Command::query()->get() as $command){
@@ -84,8 +84,8 @@ class SettingController extends Controller
                 broadcast(new \App\Events\StopGame($command));
             }
         } else {
-            $dateTradingStart = (new Carbon())->setYear($request->year_start)->setMonth($request->month_start)->setDay(1)->setTime(0, 0, 1);
-            $dateTradingFinish = (new Carbon())->setYear($request->year_finish)->setMonth($request->month_finish)->setDay(1)->setTime(0, 0, 1);
+            $dateTradingStart = (new Carbon())->setYear($request->year_start)->setMonth($request->month_start)->setDay(1)->setTime(12, 0, 1);
+            $dateTradingFinish = (new Carbon())->setYear($request->year_finish)->setMonth($request->month_finish)->setDay(1)->setTime(12, 0, 1);
             Setting::setValueByName('date_trading_start', $dateTradingStart);
             Setting::setValueByName('date_trading_finish', $dateTradingFinish);
             Setting::setValueByName('month_in_minute', $request->month_in_minute);

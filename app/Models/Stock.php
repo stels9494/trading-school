@@ -100,7 +100,7 @@ class Stock extends Model
 							->setYear($year)
 							->setMonth((int) $month)
 							->setDay(1)
-							->setTime(0, 0, 1);
+							->setTime(12, 0, 1);
 
 						$stock->quotations()->create([
 							'price' => (double) $price,
@@ -154,7 +154,7 @@ class Stock extends Model
 						->setYear($year)
 						->setMonth((int) $month)
 						->setDay(1)
-						->setTime(0, 0, 1);
+						->setTime(12, 0, 1);
 					$this->quotations()->create([
 						'price' => (double) $price,
 						'datetime' => $datetime,
