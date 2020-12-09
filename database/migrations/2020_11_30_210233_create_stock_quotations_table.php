@@ -16,7 +16,7 @@ class CreateStockQuotationsTable extends Migration
         Schema::create('stock_quotations', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('stock_id');
-            $table->unsignedBigInteger('price');
+            $table->double('price', 18, 2);
             $table->timestamp('datetime');
 
             $table->foreign('stock_id')->references('id')->on('stocks')->onDelete('cascade')->onUpdate('cascade');

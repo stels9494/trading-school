@@ -98,12 +98,12 @@ class Stock extends Model
 						$datetime = new Carbon();
 						$datetime
 							->setYear($year)
-							->setMonth($month)
+							->setMonth((int) $month)
 							->setDay(1)
 							->setTime(0, 0, 1);
 
 						$stock->quotations()->create([
-							'price' => $price,
+							'price' => (double) $price,
 							'datetime' => $datetime,
 						]);
 					}
@@ -152,11 +152,11 @@ class Stock extends Model
 					$datetime = new Carbon();
 					$datetime
 						->setYear($year)
-						->setMonth($month)
+						->setMonth((int) $month)
 						->setDay(1)
 						->setTime(0, 0, 1);
 					$this->quotations()->create([
-						'price' => $price,
+						'price' => (double) $price,
 						'datetime' => $datetime,
 					]);
 				}
