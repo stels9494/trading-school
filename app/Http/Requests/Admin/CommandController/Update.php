@@ -25,7 +25,7 @@ class Update extends FormRequest
     {
         return [
             'name' => 'required|string|between:1,255',
-            'balance' => 'required|integer|between:0,999999999',
+            'balance' => 'required|between:0,9999999999999.99',
         ];
     }
 }

@@ -20,7 +20,7 @@
 				</div>
 				<div class="col-3">
 					<label for="balance">Баланс</label>
-					<input id="balance" class="form-control" value="{{ old('balance') ?? 0 }}" type="number" name="balance" placeholder="Баланс" min="0" max="999999999" step="1">
+					<input id="balance" class="form-control" value="{{ old('balance') ?? 0 }}" type="number" name="balance" placeholder="Баланс" min="0" max="9999999999999.99" step="0.01">
 				</div>
 				<div class="col-6">
 					<label>&nbsp;</label>
