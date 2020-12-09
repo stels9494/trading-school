@@ -16,8 +16,8 @@
         :is_pause_prop="{{ Setting::getValueByName('is_pause') ? 1 : 0 }}"
         :month_in_minute_prop="{{ Setting::getValueByName('month_in_minute') }}"
         {{-- :balance="{{ $command->balance }}" --}}
-        :stocks_balance_prop="{{ $command->stocks_balance }}"
-        :stocks_count_prop="{{ $command->stocks->sum('count') }}"
+{{--        :stocks_balance_prop="{{ $command->stocks_balance }}"--}}
+{{--        :stocks_count_prop="{{ $command->stocks->sum('count') }}"--}}
     >
 
     </game-screen>

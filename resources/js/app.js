@@ -18,6 +18,10 @@ Vue.use(VueApexCharts)
 
 Vue.component('apexchart', VueApexCharts)
 
+Vue.filter('balance', function (value) {
+    return Math.round(parseFloat(value) * 100) / 100
+})
+
 import axios from './bootstrap';
 Vue.prototype.$axios = axios;
 Vue.use(BootstrapVue)

@@ -12,6 +12,11 @@ class Command extends Model
     protected $table = 'commands';
     protected $guarded = [];
 
+    protected $appends = [
+        'stocks_balance',
+        'stocks_count',
+    ];
+
     /*********** RELATIONSHIPS START ********************/
 
     	/**
@@ -69,9 +74,14 @@ class Command extends Model
             ->get();
     }
 
+    public function getStocksCountAttribute()
+    {
+        return $this->stocks->sum('count');
+    }
+
     /**
      * Стоимость портфеля команды
-     * 
+     *
      * @return float
      */
     public function getStocksBalanceAttribute(): float

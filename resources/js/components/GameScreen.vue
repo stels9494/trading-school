@@ -14,16 +14,16 @@
                 </div>
 
                 <div class="mr-2">
-                    Свободные деньги команды: <b>{{ command.balance }} ₽</b>
+                    Свободные деньги команды: <b>{{ command.balance | balance }} ₽</b>
                 </div>
                 <div class="mr-2">
-                    Кол-во акций в портфеле: <b>{{ stocks_count }} шт.</b>
+                    Кол-во акций в портфеле: <b>{{ command.stocks_count }} шт.</b>
                 </div>
                 <div class="mr-2">
-                    Текущая стоимость акций: <b>{{ stocks_balance /*portfel_current_value*/ }} ₽</b>
+                    Текущая стоимость акций: <b>{{ command.stocks_balance }} ₽</b>
                 </div>
                 <div class="mr-2">
-                    Общий баланс: <b>{{ command.balance + stocks_balance /*portfel_current_value*/ }} ₽</b>
+                    Общий баланс: <b>{{ (command.balance + command.stocks_balance) | balance }} ₽</b>
                 </div>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <b-dropdown variant="link" :text="user.fio" class="navbar-nav m-2 ml-auto">
@@ -192,8 +192,8 @@
                 type: Number,
                 default: 1
             },
-            stocks_balance_prop: 0,
-            stocks_count_prop: 0,
+            // stocks_balance_prop: 0,
+            // stocks_count_prop: 0,
         },
         data() {
             return {
@@ -247,8 +247,8 @@
                 portfel_current_value: 0,
                 timer: 0,
                 month_in_minute: this.month_in_minute_prop,
-                stocks_balance: this.stocks_balance_prop,
-                stocks_count: this.stocks_count_prop,
+                // stocks_balance: this.stocks_balance_prop,
+                // stocks_count: this.stocks_count_prop,
             }
         },
         mounted() {
@@ -325,8 +325,8 @@
                     this.getPrices(data.stock);
 
                     this.command.balance = data.command.balance
-                    this.stocks_balance = data.stocks_balance
-                    this.stocks_count = data.stocks_count
+                    this.command.stocks_balance = data.stocks_balance
+                    this.command.stocks_count = data.stocks_count
 
                     if (data.type == 'buy') {
                         let text = 'Капитан купил "' + data.stock.name + '"';
@@ -378,6 +378,9 @@
                 }).then((response) => {
                     this.buy[item.id] = 0
                     this.command.balance = response.data.command.balance
+                    this.command.stocks_balance = response.data.command.stocks_balance
+                    this.command.stocks_count = response.data.command.stocks_count
+
                     this.$set(this.portfel, item.id, response.data.portfel)
                     this.$set(this.trading_history, item.id, response.data.trading_history)
                     this.portfel_calc();
@@ -395,6 +398,9 @@
                 }).then((response) => {
                     this.buy[item.id] = 0
                     this.command.balance = response.data.command.balance
+                    this.command.stocks_balance = response.data.command.stocks_balance
+                    this.command.stocks_count = response.data.command.stocks_count
+
                     this.$set(this.portfel, item.id, response.data.portfel)
                     this.$set(this.trading_history, item.id, response.data.trading_history)
                     this.portfel_calc();
@@ -425,6 +431,11 @@
                             name: item.name,
                             data: response.data.history
                         }])
+
+                        this.command.balance = response.data.command.balance
+                        this.command.stocks_balance = response.data.command.stocks_balance
+                        this.command.stocks_count = response.data.command.stocks_count
+
                         this.prices[item.id] = response.data.price
                         this.portfel[item.id] = response.data.portfel
                         this.trading_history[item.id] = response.data.trading_history

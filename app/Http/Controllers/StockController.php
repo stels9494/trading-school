@@ -10,7 +10,7 @@ use App\Models\Command;
 
 class StockController extends Controller
 {
-    
+
     public function show(Request $request, Stock $stock)
     {
         switch ($request->action) {
@@ -22,6 +22,7 @@ class StockController extends Controller
                 $data = [
                     'price' => 0,
                     'portfel' => $user->command->stocks->where('stock_id', $stock->id)->first()->count ?? 0,
+                    'command' => $user->command,
                     'history' => [],
                     'trading_history' => $user->command->tradingHistories()->where('stock_id', $stock->id)->orderBy('id', 'desc')->get()
                 ];
