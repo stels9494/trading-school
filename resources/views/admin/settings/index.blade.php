@@ -38,53 +38,56 @@
 			</div>
 		</div>
 	</div>
-    <form action="{{ route('set-current') }}" method="post">
-        @csrf
-        <div class="container">
-            <div class="row">
-                <label class="col-12">Текущая дата (дата до которой игроки видят котировки)</label>
-                <div class="input-group mb-3 col-5">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text" for="month-current">Месяц</label>
-                    </div>
-                    <select class="custom-select" id="month-current" name="month_current" required {{ $status ? 'disabled' : '' }}>
-                        <option disabled>Выберите месяц ...</option>
-                        <option {{ $monthСurrentDate == 1 ? 'selected' : '' }} value="1">Январь</option>
-                        <option {{ $monthСurrentDate == 2 ? 'selected' : '' }} value="2">Февраль</option>
-                        <option {{ $monthСurrentDate == 3 ? 'selected' : '' }} value="3">Март</option>
-                        <option {{ $monthСurrentDate == 4 ? 'selected' : '' }} value="4">Апрель</option>
-                        <option {{ $monthСurrentDate == 5 ? 'selected' : '' }} value="5">Май</option>
-                        <option {{ $monthСurrentDate == 6 ? 'selected' : '' }} value="6">Июнь</option>
-                        <option {{ $monthСurrentDate == 7 ? 'selected' : '' }} value="7">Июль</option>
-                        <option {{ $monthСurrentDate == 8 ? 'selected' : '' }} value="8">Август</option>
-                        <option {{ $monthСurrentDate == 9 ? 'selected' : '' }} value="9">Сентябрь</option>
-                        <option {{ $monthСurrentDate == 10 ? 'selected' : '' }} value="10">Октябрь</option>
-                        <option {{ $monthСurrentDate == 11 ? 'selected' : '' }} value="11">Ноябрь</option>
-                        <option {{ $monthСurrentDate == 12 ? 'selected' : '' }} value="12">Декабрь</option>
-                    </select>
-                </div>
-
-                <div class="input-group mb-3 col-5">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text" for="year-current">Год</label>
-                    </div>
-                    <select class="custom-select" id="year-current" name="year_current" required {{ $status ? 'disabled' : '' }}>
-                        <option disabled>Выберите год ...</option>
-                        @for ($i = StockQuotation::getMinYear(); $i <= StockQuotation::getMaxYear(); $i++)
-                            <option {{ $yearСurrentDate == $i ? 'selected' : '' }} value="{{ $i }}">{{ $i }}</option>
-                        @endfor
-                    </select>
-                </div>
-                @if (!$status)
-                    <div class="col-lg-12">
-                        <button type="submit" class="btn btn-success">Обновить</button>
-                    </div>
-                @endif
-            </div>
-        </div>
-    </form>
-    <hr>
 	@if ($quotationsCount)
+
+	    <form action="{{ route('set-current') }}" method="post">
+	        @csrf
+	        <div class="container">
+	            <div class="row">
+	                <label class="col-12">Текущая дата (дата до которой игроки видят котировки)</label>
+	                <div class="input-group mb-3 col-5">
+	                    <div class="input-group-prepend">
+	                        <label class="input-group-text" for="month-current">Месяц</label>
+	                    </div>
+	                    <select class="custom-select" id="month-current" name="month_current" required {{ $status ? 'disabled' : '' }}>
+	                        <option disabled>Выберите месяц ...</option>
+	                        <option {{ $monthСurrentDate == 1 ? 'selected' : '' }} value="1">Январь</option>
+	                        <option {{ $monthСurrentDate == 2 ? 'selected' : '' }} value="2">Февраль</option>
+	                        <option {{ $monthСurrentDate == 3 ? 'selected' : '' }} value="3">Март</option>
+	                        <option {{ $monthСurrentDate == 4 ? 'selected' : '' }} value="4">Апрель</option>
+	                        <option {{ $monthСurrentDate == 5 ? 'selected' : '' }} value="5">Май</option>
+	                        <option {{ $monthСurrentDate == 6 ? 'selected' : '' }} value="6">Июнь</option>
+	                        <option {{ $monthСurrentDate == 7 ? 'selected' : '' }} value="7">Июль</option>
+	                        <option {{ $monthСurrentDate == 8 ? 'selected' : '' }} value="8">Август</option>
+	                        <option {{ $monthСurrentDate == 9 ? 'selected' : '' }} value="9">Сентябрь</option>
+	                        <option {{ $monthСurrentDate == 10 ? 'selected' : '' }} value="10">Октябрь</option>
+	                        <option {{ $monthСurrentDate == 11 ? 'selected' : '' }} value="11">Ноябрь</option>
+	                        <option {{ $monthСurrentDate == 12 ? 'selected' : '' }} value="12">Декабрь</option>
+	                    </select>
+	                </div>
+
+	                <div class="input-group mb-3 col-5">
+	                    <div class="input-group-prepend">
+	                        <label class="input-group-text" for="year-current">Год</label>
+	                    </div>
+	                    <select class="custom-select" id="year-current" name="year_current" required {{ $status ? 'disabled' : '' }}>
+	                        <option disabled>Выберите год ...</option>
+	                        @for ($i = StockQuotation::getMinYear(); $i <= StockQuotation::getMaxYear(); $i++)
+	                            <option {{ $yearСurrentDate == $i ? 'selected' : '' }} value="{{ $i }}">{{ $i }}</option>
+	                        @endfor
+	                    </select>
+	                </div>
+	                @if (!$status)
+	                    <div class="col-lg-12">
+	                        <button type="submit" class="btn btn-success">Обновить</button>
+	                    </div>
+	                @endif
+	            </div>
+	        </div>
+	    </form>
+	    <hr>
+
+	
 		<form action="{{ route('switch-game') }}" method="post">
 			@csrf
 			<div class="container">
