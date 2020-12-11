@@ -18,7 +18,7 @@ class RolesTableSeeder extends Seeder
     		],
     		[
     			'name' => 'commander',
-    			'label' => 'Командир',
+    			'label' => 'Капитан',
     		],
     		[
     			'name' => 'member',

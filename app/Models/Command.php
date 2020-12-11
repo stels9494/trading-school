@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\UploadedFile;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+
 
 class Command extends Model
 {
@@ -44,7 +47,7 @@ class Command extends Model
 
 
     /**
-     * Существование командира в команде
+     * Существование капитана в команде
      *
      * @return bool
      */
@@ -144,7 +147,7 @@ class Command extends Model
         $currentDate = Setting::getValueByName('current_date');
 
         // акция торгуется и у команды имеется достаточное кол-во для продажи
-        // пользователь должен быть командиром в этой команде
+        // пользователь должен быть капитаном в этой команде
         if ($stock->on_the_exchange && $stock->isQuotationByDay($currentDate) && $commandHasCount >= $count && Setting::getValueByName('status')  && !Setting::getValueByName('is_pause'))
         {
             $this->update([
@@ -166,4 +169,56 @@ class Command extends Model
 
         return $result;
     }
+
+
+    /**
+     * Импорт пользователей из файла в команду
+     * 
+     * @param Illuminate\Http\UploadedFile $file
+     * @return void
+     */
+    public function importUsers(UploadedFile $file): void
+    {
+        $firstnameColumn = 'A';
+        $lastnameColumn = 'B';
+        $patronymicColumn = 'C';
+        $emailColumn = 'D';
+        $loginColumn = 'E';
+        $passwordColumn = 'F';
+        $startRowNum = 2;
+
+
+        if ($file->isValid())
+        {
+            $reader = new Xlsx();
+            $reader->setReadDataOnly(true);
+            $spreadsheet = $reader->load($file->path());
+
+            // цикл по строчкам, пока не закончатся логины
+            for ($i = $startRowNum; $login = $spreadsheet->getActiveSheet()->getCell($loginColumn.$i)->getValue(); $i++)
+            {
+                $firstname = $spreadsheet->getActiveSheet()->getCell($firstnameColumn.$i)->getValue();
+                $lastname = $spreadsheet->getActiveSheet()->getCell($lastnameColumn.$i)->getValue();
+                $patronymic = $spreadsheet->getActiveSheet()->getCell($patronymicColumn.$i)->getValue();
+                $email = $spreadsheet->getActiveSheet()->getCell($emailColumn.$i)->getValue();
+                $password = $spreadsheet->getActiveSheet()->getCell($passwordColumn.$i)->getValue();
+
+                if (!User::whereLogin($login)->exists() && strlen($password) > 1 && strlen($password) < 255)
+                {
+                    $this->users()->create([
+                        'firstname' => $firstname,
+                        'lastname' => $lastname,
+                        'patronimyc' => $patronymic,
+                        'email' => $email,
+                        'login' => $login,
+                        'password' => $password,
+                    ]);
+                }
+
+            }
+
+        }
+    }
+
+
 }

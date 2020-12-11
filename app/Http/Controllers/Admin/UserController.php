@@ -41,16 +41,23 @@ class UserController extends Controller
      */
     public function store(Store $request, Command $command)
     {
-        $user = User::create([
-            'login' => $request->login,
-            'firstname' => $request->firstname,
-            'lastname' => $request->lastname,
-            'patronymic' => $request->patronymic,
-            'password' => $request->password,
-            'command_id' => $command->id,
-        ])->assignRole('member');
+        if ($request->action == 'import')
+        {
+            $command->importUsers($request->users);
+            $msg = 'Пользователи импортированы';
+        } else {
+            $user = User::create([
+                'login' => $request->login,
+                'firstname' => $request->firstname,
+                'lastname' => $request->lastname,
+                'patronymic' => $request->patronymic,
+                'password' => $request->password,
+                'command_id' => $command->id,
+            ])->assignRole('member');
+            $msg = 'Пользователь создан';
+        }
 
-        return redirect()->route('admin.commands.show', $command)->with('success', 'Пользователь создан');
+        return redirect()->route('admin.commands.show', $command)->with('success', $msg);
     }
 
     /**

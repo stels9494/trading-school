@@ -23,6 +23,10 @@ class Store extends FormRequest
      */
     public function rules()
     {
+        if ($this->action == 'import')
+        {
+            return ['users' => 'required|file|mimes:xlsx'];
+        }
         return [
             'login' => 'required|string|unique:users,login',
             'firstname' => 'nullable|string|max:255',

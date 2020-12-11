@@ -63,7 +63,7 @@ class User extends Authenticatable
     /********** RELATIONSHIPS FINISH ********************/
 
     /**
-     * установка командира команды
+     * установка капитана команды
      */
     public function setCommanderAttribute(bool $commander = false): void
     {
@@ -83,9 +83,9 @@ class User extends Authenticatable
     }
 
     /**
-     * Имеет ли пользователь роль командира
+     * Имеет ли пользователь роль капитана
      *
-     * @return true если командир в указанной команде
+     * @return true если капитан в указанной команде
      */
     public function getCommanderAttribute(): bool
     {

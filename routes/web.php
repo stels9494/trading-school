@@ -36,7 +36,7 @@ Route::group(['middleware' => 'auth'], function () {
 		}
 	})->name('index');
 
-	// учатсник и командир
+	// учатсник и капитан
 	Route::group(['middleware' => 'role:commander|member'], function () {
 		Route::get('/home', 'HomeController@index')->name('home');
 		Route::resource('/stocks', 'StockController')->only(['show']);

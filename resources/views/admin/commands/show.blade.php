@@ -26,11 +26,33 @@
 					}
 				});
 			});
-		})
+
+
+			// действие на клик кнопки импорт
+			$('#import-users').click(function (e) {
+				e.preventDefault();
+				$('#file-users').click();
+			});
+
+			// действие на изменение файлового инпута
+			$('#file-users').change(function () {
+				$(this).parent('form').submit();
+			});
+
+		});
 	</script>
 @endpush
 
 @section('content')
+
+	
+	<form action="{{ route('admin.users.store', [$data['command']]) }}" class="d-none" method="post" enctype="multipart/form-data">
+		@csrf
+		<input type="hidden" name="action" value="import">
+		<input id="file-users" type="file" name="users" accept=".xlsx">
+	</form>
+
+
 	<div class="container">
 
 		{{-- хлебные крошки --}}
@@ -71,7 +93,7 @@
 		{{-- список пользователей --}}
 		<div class="row">
 			<div class="col-12">
-				<h5 class="my-3">Участники <a class="ml-3 btn btn-sm btn-success" href="{{ route('admin.users.create', $data['command']) }}">Добавить</a></h5>
+				<h5 class="my-3">Участники <a class="ml-3 btn btn-sm btn-success" href="{{ route('admin.users.create', $data['command']) }}"><i class="fa fa-plus"></i> Добавить</a><a id="import-users" class="btn btn-primary btn-sm ml-1" href="#"><i class="fa fa-upload"></i> Импорт</a></h5>
 				<table class="table table-striped">
 					<thead>
 						<tr>
@@ -79,7 +101,7 @@
 							<th class="text-center" scope="col">Фамилия</th>
 							<th class="text-center" scope="col">Имя</th>
 							<th class="text-center" scope="col">Отчество</th>
-							<th class="text-center" scope="col">Командир</th>
+							<th class="text-center" scope="col">Капитан</th>
 							<th scope="col">&nbsp;</th>
 						</tr>
 					</thead>
