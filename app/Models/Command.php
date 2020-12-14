@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\UploadedFile;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx as Writer;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 
 class Command extends Model
@@ -44,6 +46,33 @@ class Command extends Model
 
     /*********** RELATIONSHIPS FINISH ********************/
 
+
+    public static function export()
+    {
+        $spreadsheet = new Spreadsheet();
+
+        $writer = new Writer($spreadsheet);
+
+        $worksheet = $spreadsheet->getActiveSheet();
+
+        $worksheet->getCell('A1')->setValue('Команда');
+        $worksheet->getCell('B1')->setValue('Баланс');
+        $worksheet->getCell('C1')->setValue('В акциях');
+        $worksheet->getCell('D1')->setValue('Итог');
+
+        $startRow = 2;
+
+        foreach (self::all() as $command)
+        {
+            $worksheet->getCell('A'.$startRow)->setValue($command->name);
+            $worksheet->getCell('B'.$startRow)->setValue($command->balance);
+            $worksheet->getCell('C'.$startRow)->setValue($command->stocks_balance);
+            $worksheet->getCell('D'.$startRow)->setValue($command->balance + $command->stocks_balance);
+            $startRow++;
+        }
+
+        return $writer;
+    }
 
 
     /**

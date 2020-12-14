@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\CommandController\Update;
 use App\Http\Requests\Admin\CommandController\Store;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Command;
@@ -105,5 +106,23 @@ class CommandController extends Controller
     {
         $command->tradingHistories()->delete();
         return redirect()->route('admin.commands.show', $command)->with('success', 'История очищена');
+    }
+
+    /**
+     * 
+     */
+    public function export()
+    {
+        $export = Command::export();
+
+        $response =  new StreamedResponse(
+            function () use ($export) {
+                $export->save('php://output');
+            }
+        );
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $response->headers->set('Content-Disposition', 'attachment;filename="export-margin-call-'.now().'.xlsx"');
+        $response->headers->set('Cache-Control','max-age=0');
+        return $response;
     }
 }

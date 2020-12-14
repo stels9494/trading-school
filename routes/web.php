@@ -64,6 +64,7 @@ Route::group(['middleware' => 'auth'], function () {
 			Route::post('/stocks/{stock}/import-quotations-for-stock', 'StockController@importQuotationsForStock')->name('stocks.import-quotations-for-stock');
 			Route::post('/change-password', 'UserController@changePassword')->name('users.change-password');
             Route::get('/switch-pause', 'SettingController@switchPause')->name('switch-pause');
+            Route::get('/export-commands', 'CommandController@export')->name('commands.export');
 		});
 
 		Route::post('/switch-game', 'SettingController@switchGame')->name('switch-game');

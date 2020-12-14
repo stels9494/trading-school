@@ -26,6 +26,7 @@
 					<label>&nbsp;</label>
 					<div>
 						<button type="submit" class="btn btn-success">Добавить команду</button>
+						<a class="btn btn-primary" href="{{ route('admin.commands.export') }}" target="_blank">Экспорт данных</a>
 					</div>
 				</div>
 			</div>
