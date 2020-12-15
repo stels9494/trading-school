@@ -65,6 +65,9 @@ class NextMonth extends Command
             } else {
                 // иначе остановить игру
                 Setting::setValueByName('status', false);
+                foreach (\App\Models\Command::get() as $command){
+                    broadcast(new \App\Events\StopGame($command));
+                }
                 //Setting::setValueByName('current_date', Setting::getValueByName('date_trading_start'));
             }
         }

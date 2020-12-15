@@ -139,7 +139,7 @@ class Command extends Model
         DB::beginTransaction();
         // акция торгуется и у команды достаточный баланс для покупки
         $currentDate = Setting::getValueByName('current_date');
-        if ($stock->on_the_exchange && $stock->isQuotationByDay($currentDate) && $this->balance >= $stock->current_price * $count && Setting::getValueByName('status') && !Setting::getValueByName('is_pause'))
+        if ($count > 0 && $stock->on_the_exchange && $stock->isQuotationByDay($currentDate) && $this->balance >= $stock->current_price * $count && Setting::getValueByName('status') && !Setting::getValueByName('is_pause'))
         {
             $this->update([
                 'balance' => $this->balance - $stock->current_price * $count,
@@ -177,7 +177,7 @@ class Command extends Model
 
         // акция торгуется и у команды имеется достаточное кол-во для продажи
         // пользователь должен быть капитаном в этой команде
-        if ($stock->on_the_exchange && $stock->isQuotationByDay($currentDate) && $commandHasCount >= $count && Setting::getValueByName('status')  && !Setting::getValueByName('is_pause'))
+        if ($count > 0 && $stock->on_the_exchange && $stock->isQuotationByDay($currentDate) && $commandHasCount >= $count && Setting::getValueByName('status')  && !Setting::getValueByName('is_pause'))
         {
             $this->update([
                 'balance' => $this->balance + $stock->current_price * $count,

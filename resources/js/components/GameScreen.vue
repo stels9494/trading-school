@@ -1,6 +1,6 @@
 <template>
     <div>
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm fixed-top">
             <div class="container">
                 <div class="mr-2">
                     <b>{{ command.name }}</b>
@@ -20,7 +20,7 @@
                     Кол-во акций в портфеле: <b>{{ command.stocks_count }} шт.</b>
                 </div>
                 <div class="mr-2">
-                    Текущая стоимость акций: <b>{{ command.stocks_balance }} ₽</b>
+                    Текущая стоимость акций: <b>{{ command.stocks_balance | balance }} ₽</b>
                 </div>
                 <div class="mr-2">
                     Общий баланс: <b>{{ (command.balance + command.stocks_balance) | balance }} ₽</b>
@@ -46,7 +46,7 @@
                 </b-progress>
             </div>
         </b-navbar>
-        <main class="py-4">
+        <main class="pb-4 pt-5 mt-5">
             <div class="container">
                 <div
                     v-for="stock in stocks"
