@@ -43,7 +43,7 @@ class SettingController extends Controller
                 Setting::setValueByName('month_in_minute', $request->month_in_minute);
 
             foreach (\App\Models\Command::query()->get() as $command){
-                broadcast(new \App\Events\UpdateCharts($command, [$currentDate]));
+                broadcast(new \App\Events\UpdateCharts($command, $currentDate));
             }
         }
 
@@ -62,7 +62,7 @@ class SettingController extends Controller
 
         Setting::setValueByName('current_date', $currentDate);
         foreach (\App\Models\Command::query()->get() as $command){
-            broadcast(new \App\Events\UpdateCharts($command, [$currentDate]));
+            broadcast(new \App\Events\UpdateCharts($command, $currentDate));
         }
         $msg = 'Обновили';
         return back()->with($msg);

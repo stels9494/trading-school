@@ -9,6 +9,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Carbon\Carbon;
 
 class UpdateCharts implements ShouldBroadcast
 {
@@ -22,11 +23,11 @@ class UpdateCharts implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct($command, $data)
+    public function __construct($command, $currentDate)
     {
         $this->command = $command;
         $this->data = [
-            'current_date' => $data,
+            'current_date' => (new Carbon($currentDate))->format('m.Y'),
             'command' => $this->command
         ];
     }

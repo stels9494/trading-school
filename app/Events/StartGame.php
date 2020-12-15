@@ -28,6 +28,7 @@ class StartGame implements ShouldBroadcast
         $this->command = $command;
         $this->data = [
             'command' => $command,
+            'current_date' => Setting::getValueByName('current_date')->format('m.Y'),
             'month_in_minute' => Setting::getValueByName('month_in_minute')
         ];
     }

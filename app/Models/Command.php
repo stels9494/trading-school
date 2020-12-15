@@ -144,11 +144,13 @@ class Command extends Model
             $this->update([
                 'balance' => $this->balance - $stock->current_price * $count,
             ]);
+
             $this->tradingHistories()->create([
                 'stock_id' => $stock->id,
                 'price' => $stock->current_price,
                 'count' => $count,
                 'time_by_exchange' => $currentDate,
+                'average_price' => $this->calcStockAverage($stock, $count),
             ]);
             $result = true;
         }
@@ -182,11 +184,13 @@ class Command extends Model
             $this->update([
                 'balance' => $this->balance + $stock->current_price * $count,
             ]);
+
             $this->tradingHistories()->create([
                 'stock_id' => $stock->id,
                 'price' => $stock->current_price,
                 'count' => $count * -1,
                 'time_by_exchange' => $currentDate,
+                'average_price' => $this->calcStockAverage($stock, $count * -1),
             ]);
             $result = true;
         }
@@ -249,5 +253,67 @@ class Command extends Model
         }
     }
 
+    /**
+     * Расчет средней стоимсоти покупки акции
+     * 
+     * @param App\Models\Stock $stock
+     * @param integer $count
+     * @return float
+     */
+    public function calcStockAverage(Stock $stock, int $count): float
+    {
+        $countInPortfel = $this->stocks->where('stock_id', $stock->id)->sum('count');
+        if ($countInPortfel == 0) return $stock->current_price;
 
+        // если покупка
+        if ($count > 0)
+        {
+            $history = $this->tradingHistories()->where('stock_id', $stock->id)->orderBy('id', 'desc')->first();
+            return ($history->average_price * $countInPortfel + $stock->current_price * $count) / ($countInPortfel + $count);
+        }
+
+        // если продажа
+        if ($count < 0)
+        {
+            $i = 0; // кол-во акций, которые включены в расчет средней
+            $average = 0;   // расчитанное среднее
+            $max = $countInPortfel + $count;    // кол-во акций, по которым нужно рассчитать среднюю
+
+            // история опеаций на покупку - максимально возможное кол-во на это кол-во акций
+            $histories = $this
+                ->tradingHistories()
+                ->where('stock_id', $stock->id)
+                ->where('count', '>', 0)
+                ->orderBy('id', 'desc')
+                ->limit($max)
+                ->get();
+
+            foreach ($histories as $history)
+            {
+                // если не будет превышено допустимое кол-во
+                if ($i + $history->count <= $max)
+                {
+                    $i += $history->count;
+                    $average += $history->count * $history->price;
+
+                // иначе - будет превышено допустимое кол-во акций
+                } else {
+                    // определить допустимое кол-во
+                    // уже есть кол-во акций, которые включены в расчеты
+                    $availableCount = $max - $i;
+                    $i += $availableCount;
+                    $average += $availableCount * $history->price;
+                    break;
+                }
+            }
+
+            if ($i > 0)
+            {
+                $average /= $i;
+            }
+
+            return $average;
+        }
+
+    }
 }

@@ -57,8 +57,8 @@ class NextMonth extends Command
                         // перевести
                         Setting::setValueByName('current_date', $currentDate->addMonth());
 
-                        foreach (\App\Models\Command::query()->get() as $command){
-                            broadcast(new \App\Events\UpdateCharts($command, [$currentDate]));
+                        foreach (\App\Models\Command::get() as $command){
+                            broadcast(new \App\Events\UpdateCharts($command, $currentDate));
                         }
                     }
                 }

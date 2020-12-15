@@ -14,16 +14,19 @@
                 </div>
 
                 <div class="mr-2">
-                    Свободные деньги команды: <b>{{ command.balance | balance }} ₽</b>
+                    Свободные деньги: <b>{{ command.balance | balance }} ₽</b>
                 </div>
                 <div class="mr-2">
-                    Кол-во акций в портфеле: <b>{{ command.stocks_count }} шт.</b>
+                    Акций в портфеле: <b>{{ command.stocks_count }} шт.</b>
                 </div>
                 <div class="mr-2">
-                    Текущая стоимость акций: <b>{{ command.stocks_balance | balance }} ₽</b>
+                    Стоимость портфеля: <b>{{ command.stocks_balance | balance }} ₽</b>
                 </div>
                 <div class="mr-2">
                     Общий баланс: <b>{{ (command.balance + command.stocks_balance) | balance }} ₽</b>
+                </div>
+                <div class="mr-2">
+                    Текущая дата: <b>{{ current_date }}</b>
                 </div>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <b-dropdown variant="link" :text="user.fio" class="navbar-nav m-2 ml-auto">
@@ -119,7 +122,7 @@
                                 ></b-form-input>
                             </div>
                             <div
-                                class="col-lg-4"
+                                class="col-6 col-lg-4 text-center text-lg-left"
                                 v-if="user.roles[0].name == 'commander' && status && !is_pause"
                             >
                                 <a
@@ -130,7 +133,7 @@
                                 </a>
                             </div>
                             <div
-                                class="col-lg-4"
+                                class="col-6 col-lg-4 text-center text-lg-left"
                                 v-if="user.roles[0].name == 'commander' && status && !is_pause"
                             >
                                 <a
@@ -139,6 +142,13 @@
                                 >
                                     Продать
                                 </a>
+                            </div>
+                            <div
+                                class="col-lg-12 pt-3"
+
+                            >
+                                <span>Ср. цена покупок акций в портфеле: </span>
+                                <span class="font-weight-bold">{{ (trading_history[stock.id] && trading_history[stock.id][0]) ? trading_history[stock.id][0].average_price : 0  }} ₽</span>
                             </div>
                         </div>
                         <div
@@ -194,6 +204,10 @@
                 type: Number,
                 default: 1
             },
+            current_date_prop: {
+                type: String,
+                default: ""
+            }
             // stocks_balance_prop: 0,
             // stocks_count_prop: 0,
         },
@@ -249,6 +263,7 @@
                 portfel_current_value: 0,
                 timer: 0,
                 month_in_minute: this.month_in_minute_prop,
+                current_date: this.current_date_prop,
                 // stocks_balance: this.stocks_balance_prop,
                 // stocks_count: this.stocks_count_prop,
             }
@@ -279,9 +294,11 @@
                     this.showToast(text, title, variant);
                 })
                 .listen('StartGame', ({data}) => {
+
                     this.status = 1;
                     this.month_in_minute = data.month_in_minute;
                     this.timer = 0;
+                    this.current_date = data.current_date;
                     let text = 'График будет обновляться каждые '+data.month_in_minute+' мин.';
                     let title = `Игра началась!`;
                     let variant =  'success';
@@ -299,6 +316,7 @@
                         this.prices[el.id] = 0
                         this.getPrices(el);
                     })
+                    this.current_date = data.current_date;
                     this.timer = 0;
                     let text = 'Новые данные загружены!';
                     let title = `Игра`;
