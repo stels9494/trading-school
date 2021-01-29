@@ -104,7 +104,7 @@
                                     <b-form-input
                                         :id="'actual-portfel-'+stock.id"
                                         type="number"
-                                        :value="prices[stock.id]*portfel[stock.id]"
+                                        :value="(prices[stock.id]*portfel[stock.id]) | balance"
                                         disabled
                                     ></b-form-input>
                                 </b-form-group>

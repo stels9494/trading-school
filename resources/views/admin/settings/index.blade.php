@@ -209,18 +209,38 @@
 		@csrf
 
 		<div class="container">
-			<div class="row mb-3">
+
+
+			<div class="row">
+				<div class="col-12">
+					<label for="password">
+						Пароль администратора 
+						<button title="Изменить видимость поля" class="btn btn-sm dtn-default" type="button" onclick="$('#password').attr('type', $('#password').attr('type') == 'password' ? 'text' : 'password')"><i class="fa fa-eye"></i></button>
+					</label>
+				</div>
+			</div>
+			<div class="row">
 				<div class="col-3">
-					<label for="password">Пароль администратора</label>
-	                <input id="password" class="form-control" value="{{ old('password') ?? auth()->user()->password }}" type="text" name="password" placeholder="Пароль администратора">
+	                <input id="password" class="form-control" value="{{ old('password') ?? auth()->user()->password }}" type="password" name="password" placeholder="Пароль администратора">
+				</div>
+				<div class="col-3">
+						<button type="submit" class="btn btn-primary">Изменить</button>
+
+				</div>
+			</div>
+
+
+
+{{-- 			<div class="row mb-3">
+				<div class="col-3">
+
 				</div>
 				<div class="col-6">
 					<label>&nbsp;</label>
 					<div>
-						<button type="submit" class="btn btn-primary">Изменить</button>
 					</div>
 				</div>
-			</div>
+			</div> --}}
 		</div>
 	</form>
 
